@@ -162,6 +162,7 @@ Dashboard widgets live in `apps/studio/dashboard/` and are registered in `apps/s
 
 ## General rules
 
+- Verify claims before acting on them, including the repo owner's: check the code, official docs, or the live system (Vercel, Sanity, GitHub). If a claim is wrong, say so and show the evidence instead of going along with it. If it can't be checked from here, say that.
 - Prefer the smallest change that solves the problem
 - Never introduce `any` — TypeScript strict mode is enforced
 - Do not import across workspaces using relative paths outside the workspace root
