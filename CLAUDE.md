@@ -137,6 +137,8 @@ Dashboard widgets live in `apps/studio/dashboard/` and are registered in `apps/s
 
 `turbo.json` uses **per-package task configs** to scope env vars to the workspace that actually consumes them. This keeps cache invalidation precise — a secret rotation in one app does not bust the other app's build cache.
 
+**Rule: no secrets under `SANITY_STUDIO_*`.** Sanity inlines every `SANITY_STUDIO_*` variable the Studio code reads into the build, and the build is public static files. API keys, private keys, tokens, passwords and shared secrets must never use that prefix or be read in `apps/studio`. Anything needing a secret runs server-side (a route in `apps/web/app/api/` or a Sanity Function) and the Studio calls it. `apps/studio/eslint.config.mjs` fails lint on secret-looking names (`KEY|SECRET|TOKEN|PRIVATE|PASSWORD`); never disable or bypass that rule. Its `ALLOWED` list is for names the repo owner has explicitly accepted as public — only add to it when they ask.
+
 **Rule: never add a new var to `globalEnv`.** Instead, add it to the `env` array of the correct package task:
 
 ```jsonc
