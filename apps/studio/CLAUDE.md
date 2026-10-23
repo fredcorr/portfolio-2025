@@ -54,3 +54,9 @@ This workspace is a Sanity Studio project (schemas, GROQ, previews).
   - avoid duplicating entries
 - Keep schema exports deterministic and maintainable
 - Dashboard widgets live in `apps/studio/dashboard` and the dashboard tool must remain the first plugin so Studio loads with operational context. Add new widgets there and keep them lightweight (fetch only what is required).
+
+## Secrets
+
+- The Studio is public static files: every `SANITY_STUDIO_*` variable its code reads is inlined into the bundle anyone can download.
+- Never read an API key, private key, token, password or shared secret in Studio code, and never give one the `SANITY_STUDIO_` prefix. A widget that needs one must call a server-side endpoint (`apps/web/app/api/` route or Sanity Function) that holds the secret and checks the editor's Sanity session.
+- `eslint.config.mjs` enforces this with `no-restricted-syntax`. Never disable it. Its `ALLOWED` list holds names the repo owner has knowingly made public (currently `GSC_PRIVATE_KEY`, a Restricted read-only Search Console service account); add to it only when the owner explicitly asks.
