@@ -6,6 +6,7 @@
     "dev": "sanity dev",
     "start": "sanity start",
     "build": "sanity build",
+    "lint": "eslint --max-warnings=0 .",
     "typecheck": "tsc --noEmit",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy"
@@ -33,6 +34,8 @@
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/parser": "^8.65.0",
+    "eslint": "^9.39.4",
     "prettier": "^3.9.5",
     "typescript": "^6.0.3"
   }
