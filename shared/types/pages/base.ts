@@ -1,5 +1,5 @@
 import type { BaseDocument, SanityImage, SanitySlug } from '../sanity'
-import { ComponentTypeName } from '../base'
+import { ComponentTypeName, Locale } from '../base'
 import type {
   HomePageHeroComponent,
   ProjectListingComponent,
@@ -50,9 +50,33 @@ const assertNever = <_T extends never>(): void => {
 }
 assertNever<Exclude<ComponentTypeName, PageComponent['_type']>>()
 
+/**
+ * One language version of a page, as listed by its `translation.metadata`
+ * document. Only versions that exist and are published are listed — a page is
+ * not guaranteed to exist in every locale.
+ */
+export interface PageTranslation {
+  _id: string
+  language: Locale
+  slug: SanitySlug
+}
+
+/**
+ * The translation group a page belongs to. `_id` is the metadata document's
+ * own id, projected so that linking or unlinking a translation invalidates
+ * every page variant that cached this list.
+ */
+export interface PageTranslations {
+  _id: string
+  items: PageTranslation[]
+}
+
 export interface BasePageDocument extends BaseDocument {
   title?: string
   slug?: SanitySlug
+  /** Optional until every existing document has been backfilled with `en`. */
+  language?: Locale
+  translations?: PageTranslations
   showInNavigation?: boolean
   seoTitle?: string
   seoDescription?: string
