@@ -21,7 +21,7 @@ import { GSC_EMAIL, GSC_PRIVATE_KEY, GSC_SITE_URL, fetchGSCData } from './utils'
 
 const StatCard = ({ label, value }: { label: string; value: string }) => (
   <Card border radius={2} padding={3} flex={1}>
-    <Stack space={2}>
+    <Stack gap={2}>
       <Text size={1} muted weight="semibold">
         {label}
       </Text>
@@ -202,7 +202,7 @@ export const SearchConsoleWidget = () => {
         </Box>
       )}
       {state.status === 'success' && (
-        <Stack space={4} padding={3}>
+        <Stack gap={4} padding={3}>
           <Flex gap={2}>
             <StatCard label="Clicks" value={state.data.totals.clicks.toLocaleString()} />
             <StatCard

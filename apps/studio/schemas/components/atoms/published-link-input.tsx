@@ -45,7 +45,7 @@ export function PublishedLinkInput(props: StringInputProps) {
 
   if (!readOnly) {
     return (
-      <Stack space={3}>
+      <Stack gap={3}>
         {renderDefault(props)}
         {link}
       </Stack>

@@ -35,7 +35,7 @@ const envLinks: QuickLink[] = [
 export function QuickLinksWidget() {
   return (
     <DashboardWidgetContainer header="Quick Links">
-      <Stack space={3}>
+      <Stack gap={3}>
         {envLinks.map(link => (
           <Card key={link.label} border radius={2} padding={2}>
             <Button

@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react'
 import { CopyIcon } from '@sanity/icons/Copy'
 import { LaunchIcon } from '@sanity/icons/Launch'
-import { Box, Button, Card, Flex, Stack, Text, Tooltip } from '@sanity/ui'
+import { Box, Button, Card, Flex, Stack, Text } from '@sanity/ui'
+import { Tooltip } from '@sanity/ui/tooltip'
 import type { StringInputProps } from 'sanity'
 import { useFormValue } from 'sanity'
 import { portableTextToMarkdown } from '@portfolio/utils/portable-text-to-markdown'
@@ -25,7 +26,7 @@ export function MediumSyndicationInput(props: StringInputProps) {
   }, [articleContent])
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       <Flex gap={2}>
         <Tooltip
           content={

@@ -20,7 +20,7 @@ export function StructureMenuWidget() {
         </Text>
       }
     >
-      <Stack space={3}>
+      <Stack gap={3}>
         {shortcuts.map(link => (
           <Card key={link.href} padding={2} radius={2} border>
             <Button
