@@ -42,3 +42,36 @@ export enum ComponentTypeName {
 export enum GlobalItemsType {
   Settings = "settings",
 }
+
+/**
+ * Document types created by Studio plugins rather than by our own schemas.
+ *
+ * `translation.metadata` comes from `@sanity/document-internationalization`:
+ * one hidden document per group of translations, holding a reference to each
+ * language's version. It is the only record that an English page and its
+ * Italian counterpart belong together, so hreflang lookups, nav resolution,
+ * the revalidation webhook and cache tags all have to name it.
+ */
+export enum PluginDocumentType {
+  TranslationMetadata = "translation.metadata",
+}
+
+/**
+ * The locales the site is published in.
+ *
+ * Values are what Sanity stores in each document's `language` field and what
+ * is emitted as `<html lang>` and `hreflang`, so they stay lowercase ISO 639-1
+ * codes. Adding a locale is a new member here plus its dictionary.
+ */
+export enum Locale {
+  English = "en",
+  Italian = "it",
+}
+
+/**
+ * The locale served without a URL prefix. Every other locale's slugs carry
+ * their code as the first segment (`it/journals/foo`).
+ */
+export const DEFAULT_LOCALE = Locale.English;
+
+export const SUPPORTED_LOCALES: readonly Locale[] = Object.values(Locale);

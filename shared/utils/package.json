@@ -11,6 +11,10 @@
     ".": "./index.ts",
     "./makeID": "./makeID.ts",
     "./portable-text-to-markdown": "./portable-text-to-markdown.ts",
-    "./throw-on-http-error": "./throw-on-http-error.ts"
+    "./throw-on-http-error": "./throw-on-http-error.ts",
+    "./locale": "./locale.ts"
+  },
+  "dependencies": {
+    "@portfolio/types": "*"
   }
 }
