@@ -1,7 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Locale } from "@portfolio/types/base";
-import { fromCmsSlug, isLocale, localePrefix, toCmsSlug } from "./locale";
+import {
+  fromCmsSlug,
+  isLocale,
+  localePrefix,
+  localiseSlug,
+  slugMatchesLocale,
+  toCmsSlug,
+} from "./locale";
 
 test("isLocale - accepts only supported locale codes", () => {
   assert.equal(isLocale("en"), true);
@@ -63,4 +70,25 @@ test("toCmsSlug and fromCmsSlug round-trip", () => {
     const { locale, segments } = fromCmsSlug(slug);
     assert.equal(toCmsSlug(locale, segments), slug);
   }
+});
+
+test("localiseSlug - moves a slug between locales, keeping its path", () => {
+  assert.equal(localiseSlug("journals/foo", Locale.Italian), "it/journals/foo");
+  assert.equal(localiseSlug("/", Locale.Italian), "it");
+  assert.equal(localiseSlug("it/journals/foo", Locale.English), "journals/foo");
+  assert.equal(localiseSlug("it", Locale.English), "/");
+  // Already in the target locale: unchanged, never double-prefixed.
+  assert.equal(
+    localiseSlug("it/journals/foo", Locale.Italian),
+    "it/journals/foo",
+  );
+});
+
+test("slugMatchesLocale - a slug's prefix must match its document's locale", () => {
+  assert.equal(slugMatchesLocale("journals/foo", Locale.English), true);
+  assert.equal(slugMatchesLocale("/", Locale.English), true);
+  assert.equal(slugMatchesLocale("it/journals/foo", Locale.Italian), true);
+  assert.equal(slugMatchesLocale("it", Locale.Italian), true);
+  assert.equal(slugMatchesLocale("journals/foo", Locale.Italian), false);
+  assert.equal(slugMatchesLocale("it/journals/foo", Locale.English), false);
 });
