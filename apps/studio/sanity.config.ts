@@ -18,7 +18,7 @@ import {
 } from './schemas/compositions/i18n-fields'
 import { prefixTranslationSlug } from './utils/prefix-translation-slug'
 import { DeleteTranslationAction } from './utils/delete-translation-action'
-import { filterGlobalTemplatesForI18n } from './utils/i18n-new-document-options'
+import { NavbarWithLocaleSwitch } from './components/studio-locale-switch'
 
 if (!process.env.SANITY_STUDIO_PROJECT_ID) {
   throw new Error('Missing SANITY_STUDIO_PROJECT_ID environment variable')
@@ -109,6 +109,10 @@ const createWorkspace = ({
             schemaTypes: TRANSLATABLE_TYPES,
             languageField: LANGUAGE_FIELD,
             callback: prefixTranslationSlug,
+            // One "Create" entry per type: the plugin's per-language templates
+            // would list every type twice. A new document's language is set
+            // from its Translations menu instead.
+            addTemplates: false,
           }),
         ]
       : []),
@@ -120,10 +124,6 @@ const createWorkspace = ({
   document: {
     newDocumentOptions: (prev, { creationContext }) => {
       if (creationContext.type === 'global') {
-        if (i18n) {
-          return filterGlobalTemplatesForI18n(prev)
-        }
-
         return prev.filter(
           template => !SINGLETON_TYPES.has(template.templateId || '')
         )
@@ -152,6 +152,11 @@ const createWorkspace = ({
   schema: {
     types: i18n ? withI18nFields(schemaTypes) : schemaTypes,
   },
+
+  // The content-language switch that filters every document list.
+  ...(i18n
+    ? { studio: { components: { navbar: NavbarWithLocaleSwitch } } }
+    : {}),
 })
 
 export default defineConfig([

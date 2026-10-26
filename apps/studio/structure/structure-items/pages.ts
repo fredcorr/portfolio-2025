@@ -6,7 +6,7 @@ import type {
 import { PageTypeName } from '@portfolio/types/base'
 import { LuLayers } from 'react-icons/lu'
 import { firstValueFrom } from 'rxjs'
-import { localisedList, type StructureOptions } from './localised-list'
+import { localeFilteredList, type StructureOptions } from './localised-list'
 
 export const PAGE_STRUCTURE_TYPES = new Set<string>([
   PageTypeName.Page as string,
@@ -41,13 +41,13 @@ const PagesItem = (
     .icon(LuLayers)
     .child(
       i18n
-        ? localisedList(S, {
-            id: 'pages',
-            title: 'Pages',
-            filter: '_type in $types',
-            params: { types },
-            configure: withDocumentChild,
-          })
+        ? () =>
+            localeFilteredList(S, {
+              title: 'Pages',
+              filter: '_type in $types',
+              params: { types },
+              configure: withDocumentChild,
+            })
         : withDocumentChild(
             S.documentList()
               .title('Pages')

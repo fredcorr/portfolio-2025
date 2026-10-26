@@ -77,7 +77,8 @@ const languageField = defineField({
   fieldset: baseDocumentFieldset.name,
   hidden: true,
   readOnly: true,
-  initialValue: DEFAULT_LOCALE,
+  // No initial value on purpose: a new document's language is chosen from its
+  // Translations menu, and until then it counts as English (`documentLocale`).
 })
 
 type SlugFieldDefinition = Extract<FieldDefinition, { type: 'slug' }>

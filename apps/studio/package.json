@@ -9,8 +9,7 @@
     "lint": "eslint --max-warnings=0 .",
     "typecheck": "tsc --noEmit",
     "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy",
-    "test": "tsx --test \"**/*.test.ts\""
+    "deploy-graphql": "sanity graphql deploy"
   },
   "dependencies": {
     "@fredcorr/sanity-plugin-lucide-icon-picker": "*",

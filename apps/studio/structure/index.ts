@@ -30,7 +30,7 @@ const structure = (
     .items([
       SettingsItem(S),
       S.divider(),
-      HomepageItem(S, options),
+      HomepageItem(S, context, options),
       PagesItem(S, context, options),
       S.divider(),
       ProjectsItem(S, options),
