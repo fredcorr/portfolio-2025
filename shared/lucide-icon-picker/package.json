@@ -1,0 +1,26 @@
+{
+  "name": "@fredcorr/sanity-plugin-lucide-icon-picker",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Sanity Studio input for picking Lucide icons. Vendored fork; see README.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/ui": "^4.0.1",
+    "lucide-react": "^0.532.0"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19",
+    "sanity": "^6.9.2",
+    "styled-components": "^6.1"
+  }
+}
