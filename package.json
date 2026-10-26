@@ -59,7 +59,6 @@
     "minimatch": "^10.2.6"
   },
   "dependencies": {
-    "@fredcorr/sanity-plugin-lucide-icon-picker": "github:fredcorr/sanity-plugin-lucide-icon-picker#7aea36717c0eb3b3821c91cd52d5eb93fc15b9ba",
     "@sanity/blueprints": "^0.24.0",
     "@sanity/client": "^7.23.1",
     "@sanity/functions": "^1.4.0"
