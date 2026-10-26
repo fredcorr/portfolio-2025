@@ -9,4 +9,7 @@ export const SINGLETON_ACTIONS = new Set([
   'publish',
   'discardChanges',
   'restore',
+  // From @sanity/document-internationalization; only registered in workspaces
+  // with translations enabled, so a no-op elsewhere.
+  'deleteTranslation',
 ])

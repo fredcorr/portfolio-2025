@@ -10,7 +10,15 @@ import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import structure from './structure'
 import { SINGLETON_ACTIONS, SINGLETON_TYPES } from './constants'
 import { dashboardWidgets } from './dashboard'
-import { SanityDataset } from '@portfolio/types/base'
+import { Locale, PageTypeName, SanityDataset } from '@portfolio/types/base'
+import { documentInternationalization } from '@sanity/document-internationalization'
+import {
+  withI18nFields,
+  LANGUAGE_FIELD,
+} from './schemas/compositions/i18n-fields'
+import { prefixTranslationSlug } from './utils/prefix-translation-slug'
+import { DeleteTranslationAction } from './utils/delete-translation-action'
+import { NavbarWithLocaleSwitch } from './components/studio-locale-switch'
 
 if (!process.env.SANITY_STUDIO_PROJECT_ID) {
   throw new Error('Missing SANITY_STUDIO_PROJECT_ID environment variable')
@@ -38,11 +46,21 @@ interface StudioWorkspaceOptions {
   basePath: string
   dataset: SanityDataset
   previewUrl: string
+  /**
+   * Document-level translations (English / Italian). Off by default so a
+   * workspace only gains the plugin, the `language` field and the per-locale
+   * structure once it is opted in — the one Studio deployment serves every
+   * workspace, so without this a translation created under `/prod` on a
+   * preview deploy would write to the prod dataset.
+   */
+  i18n?: boolean
 }
+
+const TRANSLATABLE_TYPES: string[] = Object.values(PageTypeName)
 
 /**
  * Both workspaces share every plugin, schema and document rule — only the
- * dataset and the preview target differ.
+ * dataset, the preview target and whether translations are enabled differ.
  */
 const createWorkspace = ({
   name,
@@ -50,6 +68,7 @@ const createWorkspace = ({
   basePath,
   dataset,
   previewUrl,
+  i18n = false,
 }: StudioWorkspaceOptions): WorkspaceOptions => ({
   name,
   title,
@@ -78,8 +97,25 @@ const createWorkspace = ({
       },
     }),
     structureTool({
-      structure: (S, context) => structure(S, context),
+      structure: (S, context) => structure(S, context, { i18n }),
     }),
+    ...(i18n
+      ? [
+          documentInternationalization({
+            supportedLanguages: [
+              { id: Locale.English, title: 'English' },
+              { id: Locale.Italian, title: 'Italiano' },
+            ],
+            schemaTypes: TRANSLATABLE_TYPES,
+            languageField: LANGUAGE_FIELD,
+            callback: prefixTranslationSlug,
+            // One "Create" entry per type: the plugin's per-language templates
+            // would list every type twice. A new document's language is set
+            // from its Translations menu instead.
+            addTemplates: false,
+          }),
+        ]
+      : []),
     lucideIconPicker(),
     media(),
     unsplashImageAsset(),
@@ -95,19 +131,32 @@ const createWorkspace = ({
       return prev
     },
     actions: (prev, context) => {
+      // Deleting a translation through the plugin's action also removes it
+      // from its translation.metadata document; the stock delete would leave
+      // the metadata pointing at nothing.
+      const withTranslationActions =
+        i18n && TRANSLATABLE_TYPES.includes(context.schemaType)
+          ? [...prev, DeleteTranslationAction]
+          : prev
+
       if (context.schemaType && SINGLETON_TYPES.has(context.schemaType)) {
-        return prev.filter(
+        return withTranslationActions.filter(
           actionItem =>
             actionItem.action && SINGLETON_ACTIONS.has(actionItem.action)
         )
       }
-      return prev
+      return withTranslationActions
     },
   },
 
   schema: {
-    types: schemaTypes,
+    types: i18n ? withI18nFields(schemaTypes) : schemaTypes,
   },
+
+  // The content-language switch that filters every document list.
+  ...(i18n
+    ? { studio: { components: { navbar: NavbarWithLocaleSwitch } } }
+    : {}),
 })
 
 export default defineConfig([
@@ -117,6 +166,7 @@ export default defineConfig([
     basePath: '/develop',
     dataset: SanityDataset.Develop,
     previewUrl: developPreviewUrl,
+    i18n: true,
   }),
   createWorkspace({
     name: SanityDataset.Prod,

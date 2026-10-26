@@ -72,3 +72,20 @@ export const fromCmsSlug = (slug: string): ParsedCmsSlug => {
     segments: first === undefined ? [] : [first, ...rest],
   };
 };
+
+/**
+ * Re-homes a stored slug into another locale, keeping its path.
+ *
+ *   localiseSlug('journals/foo', 'it')    → 'it/journals/foo'
+ *   localiseSlug('/', 'it')               → 'it'
+ *   localiseSlug('it/journals/foo', 'en') → 'journals/foo'
+ *
+ * Used when the Studio creates a translation (which copies the source's
+ * slug) and when it generates a slug for a document in a given locale.
+ */
+export const localiseSlug = (slug: string, locale: Locale): string =>
+  toCmsSlug(locale, fromCmsSlug(slug).segments);
+
+/** Whether a stored slug carries the prefix its document's locale requires. */
+export const slugMatchesLocale = (slug: string, locale: Locale): boolean =>
+  fromCmsSlug(slug).locale === locale;
