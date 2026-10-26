@@ -14,15 +14,22 @@
 The safe, non-breaking security remediation from this report has been implemented on `claude/stoic-johnson-zctbbh`:
 
 - **`apps/web`:** `next` → `^16.4.1` (resolves to **16.4.3**), `@next/third-parties` → `^16.4.3`, `eslint-config-next` → `^16.4.1`. 16.4.3 also covers three *new* advisories published after 2026-10-15 affecting `<=16.4.0` (SVG-based Image Optimization RCE, Server Actions DoS, `use cache` typed-array RCE).
-- **Root `overrides`:** `qs` → 6.16.1, `markdown-it` → 14.3.3, `js-yaml@4.1.0` → 4.3.2, `hono` → ^4.13.13, `adm-zip` → ^0.6.1, `sharp` → ^0.35.5, `smol-toml` → ^1.9.1.
-- **Lockfile** re-resolved: pulled in-range minors forward (Sanity stack 6.6→6.19, React 19.2→19.3, etc.), clearing the undici/braces/adm-zip cluster.
+- **Root `overrides`:** `qs` → 6.16.1, `markdown-it` → 14.3.3, `js-yaml@4.1.0` → 4.3.2, `hono` → ^4.13.13, `adm-zip` → ^0.6.1, `sharp` → ^0.35.5, `smol-toml` → ^1.9.1, plus two added in the follow-up pass: **`undici` → ^7.30.1** and **`zod` → ^4.6.7** (see below).
+- **Lockfile** re-resolved from scratch (all workspace `node_modules` removed to clear a stale resolution that had left `@next/third-parties`/`eslint-config-next` at 16.3.0): pulled in-range minors forward (Sanity stack 6.6→6.20, React 19.2→19.3, etc.), clearing the undici/braces/adm-zip cluster. `npm ci` is in sync with `package.json`.
 
-**Result: 38 → 20 vulnerabilities. All 2 critical and all production-facing high/moderate advisories cleared** (Next.js RCEs, `proxy-addr`, `dompurify`, `sharp`, `qs`, `js-yaml`, `nanoid`, `fast-uri`, `brace-expansion`, `source-map-js`, `markdown-it`, `smol-toml`, `hono`).
+### Follow-up pass (2026-10-26): remaining dev/build-tooling vulns cleared
 
-**Validation:** `turbo run` — `web#lint`, `web#typecheck`, `studio#typecheck`, `studio#build` all pass; `web#build` compiles and type-checks cleanly but fails only at `generateStaticParams()` fetching the Sanity content API, which is unreachable from the build sandbox (environmental, not a regression — fails identically on the base commit).
+The 20 that the first pass left as "dev/build-only" were resolved with two targeted transitive overrides rather than the breaking major *downgrades* npm proposed:
 
-**Deliberately NOT changed** (require individual review — not part of a safe security pass):
-- The **20 remaining vulnerabilities** are all in dev/build-only tooling — the `figma-developer-mcp` → jimp/zod chain and the `sanity` CLI → `@module-federation/*`/undici chain, plus `sanity-plugin-media`. Their only automatic "fix" is a breaking **major downgrade** of `sanity`, `figma-developer-mcp`, or `sanity-plugin-media`, so they were left in place. None ship in the deployed web runtime.
+- **`undici` → ^7.30.1** — a stale `undici@7.29.1` (exact-pinned by `@module-federation/dts-plugin`, deep in the Sanity CLI chain) carried 3 DoS/SSRF-adjacent advisories. Patch bump within v7, API-compatible. Cleared the undici highs **and all 9 moderate** advisories in the `@module-federation/*` / `@sanity/cli` chain (→ 20 → 10).
+- **`zod` → ^4.6.7** — the last 10 highs all traced to `zod@3.25.76` (GHSA-mrhx-c7xc-m3w5, memory exhaustion, `<4.6.6`). No patched 3.x exists, so the fix is zod v4. The v3 consumers (`sanity-plugin-media`, `figma-developer-mcp`, `@jimp/*`) use only basic zod primitives (`z.string/.object/.array/.parse/.optional/.default`) that are unchanged between v3 and v4, so the override is low-risk; verified by a passing Studio build (which bundles `sanity-plugin-media`) and web compile/typecheck.
+  - _Residual note:_ zod v4 changes error-message formatting and a few advanced APIs. The affected packages are dev tooling + the Studio media browser, not the deployed web runtime. Recommend a quick smoke-test of the Studio media plugin after merge. If any issue appears, drop the `zod` override — it only affects dev/Studio tooling for a low-practical-risk DoS advisory.
+
+**Result: 38 → 0 vulnerabilities.** All critical, high, and moderate advisories cleared.
+
+**Validation:** `turbo run` — `web#lint`, `web#typecheck`, `studio#typecheck`, `studio#build` all pass with every override in place; `web#build` compiles and type-checks cleanly but fails only at `generateStaticParams()` fetching the Sanity content API, which is unreachable from the build sandbox (environmental `ENOTFOUND …api.sanity.io`, not a regression — fails identically on the base commit).
+
+**Deliberately NOT changed** (require individual changelog review — not part of a safe security pass):
 - All **MAJOR** version bumps listed below (`framer-motion`, `recharts`, `@portabletext/react`, `@sanity/client` v8, `@sanity/ui` v4, `eslint` v10, `typescript` v7, etc.).
 
 ---
