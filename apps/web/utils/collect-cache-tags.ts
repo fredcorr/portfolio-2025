@@ -1,8 +1,11 @@
 import {
   ComponentTypeName,
+  DEFAULT_LOCALE,
   GlobalItemsType,
+  Locale,
   PageTypeName,
 } from '@portfolio/types/base'
+import { isLocale } from '@portfolio/utils/locale'
 
 /**
  * Cache tags for a Sanity query result.
@@ -48,6 +51,28 @@ const DOCUMENT_TYPES: ReadonlySet<string> = new Set<string>([
 ])
 
 /**
+ * Types that exist once per locale. Their set tags are scoped by locale, so
+ * publishing an Italian article invalidates Italian listings and leaves the
+ * English ones cached. Settings is shared across locales and stays unscoped.
+ */
+const LOCALISED_TYPES: ReadonlySet<string> = new Set<string>(
+  Object.values(PageTypeName)
+)
+
+export function isLocalisedType(type: string): boolean {
+  return LOCALISED_TYPES.has(type)
+}
+
+/**
+ * The locale a document belongs to. Documents from before translations
+ * existed carry no `language` and are English — the same default the GROQ
+ * `LANGUAGE_FILTER` applies.
+ */
+export function documentLocale(language: unknown): Locale {
+  return isLocale(language) ? language : DEFAULT_LOCALE
+}
+
+/**
  * Sanity addresses a draft as `drafts.<id>` while the published document keeps
  * the bare id. Cache entries are built from published reads, so a webhook
  * carrying a draft id has to normalise or it would never match.
@@ -60,8 +85,15 @@ export function idTag(id: string): string {
   return `${ID_TAG_PREFIX}${normaliseDocumentId(id)}`
 }
 
-export function typeTag(type: string): string {
-  return `${TYPE_TAG_PREFIX}${type}`
+/**
+ * "Documents of this type changed", optionally within one locale. Localised
+ * types are always tagged with a locale; the bare form is for shared types
+ * such as settings.
+ */
+export function typeTag(type: string, locale?: Locale): string {
+  return locale
+    ? `${TYPE_TAG_PREFIX}${type}:${locale}`
+    : `${TYPE_TAG_PREFIX}${type}`
 }
 
 /**
@@ -83,8 +115,10 @@ export function typeTag(type: string): string {
  * the count while reporting itself as an update. That entry stays stale until
  * its `cacheLife` expires.
  */
-export function countTag(type: string): string {
-  return `${COUNT_TAG_PREFIX}${type}`
+export function countTag(type: string, locale?: Locale): string {
+  return locale
+    ? `${COUNT_TAG_PREFIX}${type}:${locale}`
+    : `${COUNT_TAG_PREFIX}${type}`
 }
 
 export function isDocumentType(type: string): boolean {
@@ -109,8 +143,14 @@ export function chunkCacheTags(tags: string[]): string[][] {
  * would invalidate every article page whenever any single article changed —
  * the exact over-invalidation this replaces. The root is already addressed
  * precisely by its id tag.
+ *
+ * Type tags for localised types carry a locale. Pass the query's `locale`
+ * when every set in it was filtered to that locale (a page and its listings):
+ * nested documents rarely project `language`, but they are known to belong to
+ * the query's locale. Omit it for a result that spans locales (the sitemap),
+ * and each document's own `language` is used — which that query must project.
  */
-export function collectCacheTags(root: unknown): string[] {
+export function collectCacheTags(root: unknown, locale?: Locale): string[] {
   const tags = new Set<string>()
   // Sanity references can be mutual, so an unguarded walk can revisit forever.
   const seen = new Set<object>()
@@ -141,7 +181,11 @@ export function collectCacheTags(root: unknown): string[] {
 
     const type = record._type
     if (!isRoot && typeof type === 'string' && isDocumentType(type)) {
-      tags.add(typeTag(type))
+      tags.add(
+        isLocalisedType(type)
+          ? typeTag(type, locale ?? documentLocale(record.language))
+          : typeTag(type)
+      )
     }
 
     for (const key of Object.keys(record)) {
@@ -210,16 +254,21 @@ const ROOT_SET_DEPENDENCIES: Readonly<
  * navigation queries — have no component to key off and declare their tag at
  * the call site instead.
  */
-export function collectSetDependencyTags(root: unknown): string[] {
+export function collectSetDependencyTags(
+  root: unknown,
+  locale: Locale
+): string[] {
   const tags = new Set<string>()
   const seen = new Set<object>()
 
+  // Every declared set was queried through `LANGUAGE_FILTER`, so it is the
+  // set of that type *in this locale*.
   const declare = (
     source: Readonly<Partial<Record<string, readonly PageTypeName[]>>>,
     type: string
   ): void => {
     for (const dependency of source[type] ?? []) {
-      tags.add(typeTag(dependency))
+      tags.add(typeTag(dependency, locale))
     }
   }
 

@@ -2,6 +2,7 @@ import type { HomePageHeroComponent } from '@portfolio/types/components'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import OverlapAnimation from '@/components/hoc/OverlapAnimation'
 import getSettings from '@/utils/get-settings'
+import { DEFAULT_LOCALE } from '@portfolio/types/base'
 import Icon from '@/components/atoms/Icon/Icon'
 import { ThreeBackgroundTunnel } from '@/components/molecules/lazy-backgrounds'
 import { FadeIn } from '@/components/animation/FadeIn/FadeIn'
@@ -20,7 +21,9 @@ export const HomePageHero = async ({
   componentIndex,
   scrollTargetId,
 }: HomePageHeroProps) => {
-  const { settings } = await getSettings()
+  // Only the contact email is read, and it is shared by every locale, so the
+  // default locale's (already cached) settings entry serves every page.
+  const { settings } = await getSettings(DEFAULT_LOCALE)
   const headline = title?.trim()
   const supportingCopy = subtitle?.trim()
   const contactLabel = getInTouchTitle?.trim()

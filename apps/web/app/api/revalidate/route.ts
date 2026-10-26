@@ -1,7 +1,9 @@
 import { revalidateTag } from 'next/cache'
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
-import { GlobalItemsType, PageTypeName } from '@portfolio/types/base'
-import { countTag, idTag, typeTag } from '@/utils/collect-cache-tags'
+import {
+  buildRevalidationTags,
+  type RevalidationPayload,
+} from '@/utils/build-revalidation-tags'
 
 /**
  * Sanity webhook receiver. Invalidates cached content on publish.
@@ -17,7 +19,8 @@ import { countTag, idTag, typeTag } from '@/utils/collect-cache-tags'
  *   {
  *     "_id": coalesce(_id, before()._id),
  *     "_type": coalesce(_type, before()._type),
- *     "slug": coalesce(slug.current, before().slug.current)
+ *     "slug": coalesce(slug.current, before().slug.current),
+ *     "language": coalesce(language, before().language)
  *   }
  *
  * A bare `_id` is not enough. The payload is the document *after* the change,
@@ -28,6 +31,11 @@ import { countTag, idTag, typeTag } from '@/utils/collect-cache-tags'
  *
  * `_id` drives precise invalidation; without it a publish falls back to
  * type-level tags, which is coarser than necessary.
+ *
+ * `language` scopes set invalidation to one locale, so an Italian publish or
+ * delete leaves English listings cached. Without it — a projection not yet
+ * updated, or a document from before translations — every locale's set tags
+ * fire: correct, just coarser. See `utils/build-revalidation-tags.ts`.
  */
 
 /**
@@ -36,28 +44,6 @@ import { countTag, idTag, typeTag } from '@/utils/collect-cache-tags'
  */
 const DATASET_HEADER = 'sanity-dataset'
 const OPERATION_HEADER = 'sanity-operation'
-
-/**
- * The one operation that cannot change the size of a set. Anything else —
- * including a header we do not recognise — fires the count tag, so an
- * unexpected value over-invalidates rather than silently freezing a total.
- */
-const NON_SET_CHANGING_OPERATION = 'update'
-
-const PAGE_TYPES: string[] = [
-  PageTypeName.HomePage,
-  PageTypeName.ProjectPage,
-  PageTypeName.AboutPage,
-  PageTypeName.ContactPage,
-  PageTypeName.ArticlePage,
-  PageTypeName.Page,
-]
-
-interface WebhookPayload {
-  _id?: string
-  _type?: string
-  slug?: string
-}
 
 export async function POST(request: Request) {
   const secret = process.env.SANITY_REVALIDATE_SECRET
@@ -107,7 +93,7 @@ export async function POST(request: Request) {
     )
   }
 
-  let payload: WebhookPayload
+  let payload: RevalidationPayload
 
   try {
     payload = JSON.parse(body)
@@ -115,56 +101,7 @@ export async function POST(request: Request) {
     return Response.json({ error: 'Invalid JSON payload.' }, { status: 400 })
   }
 
-  const tags = new Set<string>()
-
-  // Two complementary tags, because neither covers the other's case.
-  //
-  // The id tag is exact: it hits precisely the cache entries that dereferenced
-  // this document, so fixing a typo in one article leaves every unrelated page
-  // cached.
-  //
-  // The type tag is what handles *creates and deletes*. A newly published
-  // article has an id that was never in any cache entry, so no id tag can
-  // match it — only a listing that recorded "this entry depends on articles
-  // collectively" will be invalidated.
-  //
-  // Regeneration is lazy: revalidateTag only marks entries stale, and fresh
-  // data is fetched when a page using the tag is next visited. So this does not
-  // trigger a burst of rebuilds.
-  if (payload._id) {
-    tags.add(idTag(payload._id))
-  }
-
-  if (payload._type) {
-    tags.add(typeTag(payload._type))
-  }
-
-  // The count tag is the type tag's narrower sibling, for entries whose only
-  // set dependency is a `count()`. A total moves when a document enters or
-  // leaves the set and never when one is edited, so withholding this on an
-  // update keeps a copy edit on some project from evicting the site settings
-  // and navigation — entries every page depends on.
-  //
-  // Deliberately not `=== 'create' || === 'delete'`: an unreadable or
-  // unexpected operation should over-invalidate, not freeze a total.
-  if (payload._type && operation !== NON_SET_CHANGING_OPERATION) {
-    tags.add(countTag(payload._type))
-  }
-
-  if (payload._type && PAGE_TYPES.includes(payload._type)) {
-    // Listing surfaces change whenever any page-like document does, including
-    // on create and delete, which no id in the existing result can signal.
-    tags.add('sanity:sitemap')
-    tags.add('sanity:llms')
-
-    if (payload.slug) {
-      tags.add(`sanity:page:${payload.slug}`)
-    }
-  }
-
-  if (payload._type === GlobalItemsType.Settings) {
-    tags.add('sanity:settings')
-  }
+  const tags = buildRevalidationTags(payload, operation)
 
   // A payload carrying neither an id nor a type tells us nothing about what to
   // invalidate.

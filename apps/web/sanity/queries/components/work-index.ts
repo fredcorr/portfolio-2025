@@ -4,6 +4,7 @@ import {
   imageFields,
   titleFields,
   PUBLISHED_FILTER,
+  LANGUAGE_FILTER,
 } from '../fragments'
 import { PageTypeName } from '@portfolio/types/base'
 
@@ -33,7 +34,7 @@ export const workIndexFields = groq`
   categoryLabel,
   "title": ${title},
   subtitle,
-  "projects": *[_type == "${PageTypeName.ProjectPage}" && defined(slug.current) && ${PUBLISHED_FILTER}]
+  "projects": *[_type == "${PageTypeName.ProjectPage}" && defined(slug.current) && ${PUBLISHED_FILTER} && ${LANGUAGE_FILTER}]
     | order(coalesce(year, 0) desc, coalesce(_updatedAt, _createdAt) desc){
       ${workIndexProjectFields}
     }

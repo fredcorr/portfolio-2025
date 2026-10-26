@@ -1,5 +1,6 @@
 'use client'
 
+import type { Locale } from '@portfolio/types/base'
 import { useState } from 'react'
 import useSWR from 'swr'
 
@@ -33,6 +34,8 @@ interface ApiResponse {
 interface JournalsListingClientProps {
   initialData: JournalsListingData
   apiEndpoint: string
+  /** Pages fetched after the first must stay in the listing's language. */
+  locale: Locale
 }
 
 const fetcher = async (url: string): Promise<ApiResponse> => {
@@ -43,10 +46,11 @@ const fetcher = async (url: string): Promise<ApiResponse> => {
 
 const buildKey = (
   apiEndpoint: string,
+  locale: Locale,
   categories: string[],
   page: number
 ): string => {
-  const params = new URLSearchParams({ page: String(page) })
+  const params = new URLSearchParams({ page: String(page), locale })
   if (categories.length > 0) params.set('categories', categories.join(','))
   return `${apiEndpoint}?${params.toString()}`
 }
@@ -76,6 +80,7 @@ const articleToCardProps = (
 const JournalsListingClient = ({
   initialData,
   apiEndpoint,
+  locale,
 }: JournalsListingClientProps) => {
   const [activeCategories, setActiveCategories] = useState<string[]>([])
   const [page, setPage] = useState(1)
@@ -83,7 +88,9 @@ const JournalsListingClient = ({
   const isInitialState = activeCategories.length === 0 && page === 1
 
   const { data, error, isLoading, mutate } = useSWR<ApiResponse>(
-    isInitialState ? null : buildKey(apiEndpoint, activeCategories, page),
+    isInitialState
+      ? null
+      : buildKey(apiEndpoint, locale, activeCategories, page),
     fetcher
   )
 

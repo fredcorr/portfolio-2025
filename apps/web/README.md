@@ -63,9 +63,9 @@ apps/web/
 │   ├── api/                 # API routes
 │   │   ├── draft/           # Draft mode API
 │   │   └── disable-draft/
-│   ├── [[...slug]]/         # Catch-all route
-│   ├── layout.tsx           # Root layout
-│   ├── page.tsx             # Home page
+│   ├── [locale]/            # One tree per locale (en unprefixed via proxy.ts)
+│   │   ├── [[...slug]]/     # Catch-all CMS route
+│   │   └── layout.tsx       # Root layout (<html lang>)
 │   └── globals.css          # Global styles
 ├── components/              # Atomic design structure
 │   ├── atoms/               # Basic building blocks

@@ -65,13 +65,13 @@ When a Studio schema changes, update `shared/types/` accordingly. The web app mu
 
 ### Page rendering pipeline
 
-All pages are served through a single catch-all route `apps/web/app/[[...slug]]/page.tsx`:
+All pages are served through a single catch-all route `apps/web/app/[locale]/[[...slug]]/page.tsx`. `apps/web/proxy.ts` maps public URLs onto it: English is unprefixed (`/journals/foo` is rewritten to `/en/journals/foo`, and `/en/…` redirects to the unprefixed URL), while Italian keeps its prefix (`/it/journals/foo`). Sanity stores the prefixed path in `slug.current`. `toCmsSlug` / `fromCmsSlug` in `shared/utils/locale.ts` join and split it, and every language-scoped GROQ set composes `LANGUAGE_FILTER` with a `$locale` param.
 
-1. `generateStaticParams()` pre-fetches all page slugs via `ALL_PAGES_QUERY`
-2. The slug resolves via `getPage()` which dispatches `PAGE_BY_SLUG_QUERY` using either `client` or `previewClient`
+1. `generateStaticParams()` pre-fetches each locale's page slugs via `ALL_PAGES_QUERY`
+2. The slug resolves via `getPage(slug, locale, isDraft)`, which dispatches `PAGE_BY_SLUG_QUERY` using either `client` or `previewClient`
 3. `RenderTemplate` inspects `page._type` and renders the matching template component
 4. Each template iterates its component array and renders each via `RenderOrganism`, which switches on `component._type`
-5. ISR is set via `revalidate` in `apps/web/app/[[...slug]]/page.tsx` (currently `3600` seconds); draft mode bypasses the cache
+5. ISR is set via `revalidate` in `apps/web/app/[locale]/[[...slug]]/page.tsx` (currently `3600` seconds); draft mode bypasses the cache
 
 ### Templates vs. organisms
 

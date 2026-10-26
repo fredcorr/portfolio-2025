@@ -4,6 +4,7 @@ import {
   imageFields,
   titleFields,
   PUBLISHED_FILTER,
+  LANGUAGE_FILTER,
 } from '../fragments'
 import { JOURNALS_PAGE_SIZE } from '@/utils/journals-pagination'
 
@@ -16,13 +17,13 @@ export const journalArticleFields = groq`
   tags,
   _createdAt,
   "articleContent": articleContent[],
-  "editionNumber": coalesce(editionNumber, count(*[_type == "article" && _createdAt <= ^._createdAt])),
+  "editionNumber": coalesce(editionNumber, count(*[_type == "article" && ${LANGUAGE_FILTER} && _createdAt <= ^._createdAt])),
   "cardImage": coalesce(heroImage, seoImage) {
     ${imageFields}
   }
 `
 
-const articleBase = groq`_type == "article" && defined(slug.current) && ${PUBLISHED_FILTER}`
+const articleBase = groq`_type == "article" && defined(slug.current) && ${PUBLISHED_FILTER} && ${LANGUAGE_FILTER}`
 
 export const journalsListingFields = groq`
   ${baseComponentFields},

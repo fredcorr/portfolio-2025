@@ -3,7 +3,10 @@ import { Play } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { draftMode } from 'next/headers'
-import './globals.css'
+import { notFound } from 'next/navigation'
+import { SUPPORTED_LOCALES } from '@portfolio/types/base'
+import { isLocale } from '@portfolio/utils/locale'
+import '../globals.css'
 import { ThemeToggle } from '@/components/atoms/ThemeToggle/ThemeToggle'
 import Footer from '@/components/organisms/Footer/Footer'
 import Navigation from '@/components/organisms/Navigation/Navigation'
@@ -32,18 +35,35 @@ const play = Play({
   display: 'optional',
 })
 
+// Cache Components requires every root param to have at least one value at
+// build time; `locale` is the root param, so list every supported locale.
+export function generateStaticParams() {
+  return SUPPORTED_LOCALES.map(locale => ({ locale }))
+}
+
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode
+  params: Promise<{ locale: string }>
 }>) {
-  const { settings, projectCount } = await getSettings()
+  const { locale } = await params
+
+  // The proxy only ever routes supported locales here, but a request for
+  // `/<anything>` that bypassed it (or a typo in a rewrite) must 404 rather
+  // than render with an unknown `lang`.
+  if (!isLocale(locale)) {
+    notFound()
+  }
+
+  const { settings, projectCount } = await getSettings(locale)
   const items = settings?.navigationItems ?? []
   const { isEnabled: isDraftMode } = await draftMode()
   const copyrightYear = await getCopyrightYear()
 
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang={locale} data-scroll-behavior="smooth">
       <body
         className={`${play.variable} min-h-screen bg-background text-foreground antialiased transition-colors duration-150`}
         suppressHydrationWarning

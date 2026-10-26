@@ -1,4 +1,7 @@
 import type { JournalsListingComponent } from '@portfolio/types/components'
+import { locale as rootLocale } from 'next/root-params'
+import { isLocale } from '@portfolio/utils/locale'
+import { DEFAULT_LOCALE } from '@portfolio/types/base'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import { toHeadingTag } from '@/components/atoms/Heading/Heading'
 import JournalsListingClient from '@/components/hoc/JournalsListingClient'
@@ -8,7 +11,7 @@ import { JOURNALS_PAGE_SIZE } from '@/utils/journals-pagination'
 import { SlideIn } from '@/components/animation/SlideIn/SlideIn'
 import { FadeIn } from '@/components/animation/FadeIn/FadeIn'
 
-export default function JournalsListing({
+export default async function JournalsListing({
   _id,
   _key,
   sectionId,
@@ -23,6 +26,10 @@ export default function JournalsListing({
   })
 
   const total = initialData?.total ?? 0
+  // The client fetches further pages itself, and client components can't read
+  // root params — so the server hands it the page's locale.
+  const routeLocale = await rootLocale()
+  const locale = isLocale(routeLocale) ? routeLocale : DEFAULT_LOCALE
 
   return (
     <ComponentLayout
@@ -77,6 +84,7 @@ export default function JournalsListing({
             ),
           }}
           apiEndpoint="/api/journals"
+          locale={locale}
         />
       )}
     </ComponentLayout>
