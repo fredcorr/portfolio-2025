@@ -4,6 +4,7 @@ import {
   imageFields,
   titleFields,
   PUBLISHED_FILTER,
+  LANGUAGE_FILTER,
 } from '../fragments'
 import { PageTypeName } from '@portfolio/types/base'
 
@@ -33,7 +34,7 @@ export const projectListingFields = groq`
   addStaggerAnimation,
   "projects": select(
     count(projects[]->slug.current) > 0 => projects[]->{ ${projectFields} },
-    *[_type == "${PageTypeName.ProjectPage}" && defined(slug.current) && ${PUBLISHED_FILTER}]
+    *[_type == "${PageTypeName.ProjectPage}" && defined(slug.current) && ${PUBLISHED_FILTER} && ${LANGUAGE_FILTER}]
       | order(coalesce(_updatedAt, _createdAt) desc)[0...6]{
         ${projectFields}
       }

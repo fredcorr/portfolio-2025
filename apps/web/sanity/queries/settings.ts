@@ -1,6 +1,6 @@
 import groq from 'groq'
 import { GlobalItemsType, PageTypeName } from '@portfolio/types/base'
-import { PUBLISHED_FILTER } from './fragments'
+import { LANGUAGE_FILTER, PUBLISHED_FILTER } from './fragments'
 
 export const SETTINGS_QUERY = groq`
   {
@@ -36,7 +36,8 @@ export const SETTINGS_QUERY = groq`
     "projectCount": count(*[
       _type == "${PageTypeName.ProjectPage}" &&
       defined(slug.current) &&
-      ${PUBLISHED_FILTER}
+      ${PUBLISHED_FILTER} &&
+      ${LANGUAGE_FILTER}
     ])
   }
 `

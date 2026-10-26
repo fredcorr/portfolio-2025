@@ -2,7 +2,7 @@ import { client } from '@/sanity/client'
 import { LLMS_QUERY } from '@/sanity/queries/llms'
 import { getSiteUrl } from '@/utils/get-site-url'
 import { buildPageUrl } from '@/utils/slug'
-import { PageTypeName } from '@portfolio/types/base'
+import { Locale, PageTypeName } from '@portfolio/types/base'
 import { NextResponse } from 'next/server'
 import { chunkCacheTags, collectCacheTags } from '@/utils/collect-cache-tags'
 import { cacheLife, cacheTag } from 'next/cache'
@@ -31,7 +31,8 @@ async function fetchLlmsData(): Promise<LlmsData> {
 
   const data = await client.fetch<LlmsData>(LLMS_QUERY)
 
-  for (const chunk of chunkCacheTags(collectCacheTags(data))) {
+  // English only (see LLMS_QUERY), so its pages are English-scoped.
+  for (const chunk of chunkCacheTags(collectCacheTags(data, Locale.English))) {
     cacheTag(...chunk)
   }
 
