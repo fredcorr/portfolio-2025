@@ -9,6 +9,24 @@
 
 ---
 
+## ✅ Remediation applied (2026-10-26)
+
+The safe, non-breaking security remediation from this report has been implemented on `claude/stoic-johnson-zctbbh`:
+
+- **`apps/web`:** `next` → `^16.4.1` (resolves to **16.4.3**), `@next/third-parties` → `^16.4.3`, `eslint-config-next` → `^16.4.1`. 16.4.3 also covers three *new* advisories published after 2026-10-15 affecting `<=16.4.0` (SVG-based Image Optimization RCE, Server Actions DoS, `use cache` typed-array RCE).
+- **Root `overrides`:** `qs` → 6.16.1, `markdown-it` → 14.3.3, `js-yaml@4.1.0` → 4.3.2, `hono` → ^4.13.13, `adm-zip` → ^0.6.1, `sharp` → ^0.35.5, `smol-toml` → ^1.9.1.
+- **Lockfile** re-resolved: pulled in-range minors forward (Sanity stack 6.6→6.19, React 19.2→19.3, etc.), clearing the undici/braces/adm-zip cluster.
+
+**Result: 38 → 20 vulnerabilities. All 2 critical and all production-facing high/moderate advisories cleared** (Next.js RCEs, `proxy-addr`, `dompurify`, `sharp`, `qs`, `js-yaml`, `nanoid`, `fast-uri`, `brace-expansion`, `source-map-js`, `markdown-it`, `smol-toml`, `hono`).
+
+**Validation:** `turbo run` — `web#lint`, `web#typecheck`, `studio#typecheck`, `studio#build` all pass; `web#build` compiles and type-checks cleanly but fails only at `generateStaticParams()` fetching the Sanity content API, which is unreachable from the build sandbox (environmental, not a regression — fails identically on the base commit).
+
+**Deliberately NOT changed** (require individual review — not part of a safe security pass):
+- The **20 remaining vulnerabilities** are all in dev/build-only tooling — the `figma-developer-mcp` → jimp/zod chain and the `sanity` CLI → `@module-federation/*`/undici chain, plus `sanity-plugin-media`. Their only automatic "fix" is a breaking **major downgrade** of `sanity`, `figma-developer-mcp`, or `sanity-plugin-media`, so they were left in place. None ship in the deployed web runtime.
+- All **MAJOR** version bumps listed below (`framer-motion`, `recharts`, `@portabletext/react`, `@sanity/client` v8, `@sanity/ui` v4, `eslint` v10, `typescript` v7, etc.).
+
+---
+
 ## 🔴 CRITICAL — act first
 
 ### `next` (direct, `apps/web`) — multiple RCE + cache-poisoning advisories
