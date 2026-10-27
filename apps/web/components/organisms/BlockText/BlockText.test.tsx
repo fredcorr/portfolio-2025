@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import {
   blockTextSplitMock,
@@ -11,7 +12,9 @@ import {
 import BlockText from './BlockText'
 
 test('renders split layout with a smaller heading style', () => {
-  const markup = renderToStaticMarkup(<BlockText {...blockTextSplitMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<BlockText {...blockTextSplitMock} />)
+  )
 
   assert.match(markup, /String value/)
   assert.match(markup, /md:col-start-7/)
@@ -20,7 +23,9 @@ test('renders split layout with a smaller heading style', () => {
 })
 
 test('renders stacked layout with a larger heading style', () => {
-  const markup = renderToStaticMarkup(<BlockText {...blockTextStackedMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<BlockText {...blockTextStackedMock} />)
+  )
 
   assert.match(markup, /String value/)
   assert.doesNotMatch(markup, /md:col-start-7/)
@@ -29,7 +34,7 @@ test('renders stacked layout with a larger heading style', () => {
 
 test('renders split layout with a larger heading style', () => {
   const markup = renderToStaticMarkup(
-    <BlockText {...blockTextSplitLargeMock} />
+    withIntl(<BlockText {...blockTextSplitLargeMock} />)
   )
 
   assert.match(markup, /String value/)
@@ -39,12 +44,14 @@ test('renders split layout with a larger heading style', () => {
 
 test('returns null when heading and body are missing', () => {
   const markup = renderToStaticMarkup(
-    <BlockText
-      _type={blockTextSplitMock._type}
-      title={undefined}
-      body={undefined}
-      splitLayout={false}
-    />
+    withIntl(
+      <BlockText
+        _type={blockTextSplitMock._type}
+        title={undefined}
+        body={undefined}
+        splitLayout={false}
+      />
+    )
   )
 
   assert.equal(markup, '')

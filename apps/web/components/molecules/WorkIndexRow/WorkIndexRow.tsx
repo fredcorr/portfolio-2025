@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import Link from 'next/link'
 
@@ -38,6 +39,7 @@ const WorkIndexRow = ({
   index,
   className,
 }: WorkIndexRowProps) => {
+  const t = useTranslations('common')
   const formattedIndex = formatIndex(index)
   const formattedTag = tag ? formatTagSlug(tag) : undefined
 
@@ -88,7 +90,7 @@ const WorkIndexRow = ({
           />
           <span
             className="absolute right-4 top-4 font-heading text-[13px] tracking-[0.1em] text-white/70"
-            aria-label={`Project ${index + 1}`}
+            aria-label={t('projectNumber', { number: String(index + 1) })}
           >
             {formattedIndex}
           </span>
@@ -99,7 +101,11 @@ const WorkIndexRow = ({
 
   if (href) {
     return (
-      <Link href={href} aria-label={`View ${title}`} className={rowClassName}>
+      <Link
+        href={href}
+        aria-label={t('view', { title })}
+        className={rowClassName}
+      >
         {content}
       </Link>
     )

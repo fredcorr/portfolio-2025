@@ -1,3 +1,4 @@
+import { fromCmsSlug, toCmsSlug } from '@portfolio/utils/locale'
 import slugToBreadcrumbs, { buildPageUrl } from '@/utils/slug'
 import type { BreadcrumbListSchema } from '@/types/json-schema'
 
@@ -18,6 +19,8 @@ export const getBreadcrumbLabel = (page: BreadcrumbPage): string | undefined =>
 export const getBreadcrumbSchema = (
   siteUrl: string,
   page: BreadcrumbPage,
+  /** "Home" in the page's language. */
+  homeLabel: string,
   fallbackSlug?: string
 ): BreadcrumbListSchema | null => {
   const slug = page.slug?.current || fallbackSlug
@@ -30,8 +33,11 @@ export const getBreadcrumbSchema = (
   }
 
   const pageUrl = buildPageUrl(siteUrl, slug ?? undefined)
+  // The trail starts at the homepage of the page's own locale (`/it` for an
+  // Italian article), which the slug's prefix names.
+  const homeSlug = toCmsSlug(fromCmsSlug(slug ?? '').locale)
   const listItems = [
-    { name: 'Home', item: siteUrl },
+    { name: homeLabel, item: buildPageUrl(siteUrl, homeSlug) },
     ...items.map(item => ({
       name: item.label,
       item: item.href ? buildPageUrl(siteUrl, item.href) : pageUrl,

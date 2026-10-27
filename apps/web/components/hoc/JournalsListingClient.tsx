@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { Locale } from '@portfolio/types/base'
 import { useState } from 'react'
 import useSWR from 'swr'
@@ -83,6 +84,7 @@ const JournalsListingClient = ({
   locale,
 }: JournalsListingClientProps) => {
   const formatDate = useFormatDate()
+  const t = useTranslations('listing')
   const [activeCategories, setActiveCategories] = useState<string[]>([])
   const [page, setPage] = useState(1)
 
@@ -132,7 +134,7 @@ const JournalsListingClient = ({
       {/* Filter: react-select control + chips rendered outside the control */}
       <nav
         className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-foreground/10 py-4"
-        aria-label="Filter by topic"
+        aria-label={t('filterLabel')}
       >
         <Select
           isMulti
@@ -142,9 +144,9 @@ const JournalsListingClient = ({
             setActiveCategories(values)
             setPage(1)
           }}
-          placeholder="Filter by Topic"
+          placeholder={t('filterPlaceholder')}
           instanceId="journal-topic-filter"
-          aria-label="Filter by topic"
+          aria-label={t('filterLabel')}
           controlShouldRenderValue={false}
           hideSelectedOptions={false}
           closeMenuOnSelect={false}
@@ -156,7 +158,7 @@ const JournalsListingClient = ({
           <button
             key={cat}
             onClick={() => removeCategory(cat)}
-            aria-label={`Remove ${cat} filter`}
+            aria-label={t('removeFilter', { topic: cat })}
             className={cn(
               'relative py-2 font-heading text-body-md uppercase tracking-[0.14em] text-foreground',
               'transition-colors hover:text-foreground/70',
@@ -181,16 +183,14 @@ const JournalsListingClient = ({
           </div>
         ) : error ? (
           <div className="flex flex-col items-start gap-4 py-20">
-            <p className="font-heading text-foreground/70">
-              Couldn&apos;t load articles — try again.
-            </p>
+            <p className="font-heading text-foreground/70">{t('loadError')}</p>
             <Button variant="outline" onClick={() => void mutate()}>
-              Retry
+              {t('retry')}
             </Button>
           </div>
         ) : articles.length === 0 ? (
           <p className="py-20 font-heading text-[clamp(1.5rem,3vw,2.5rem)] font-normal tracking-[-0.02em] text-foreground/70">
-            No entries in this category yet.
+            {t('emptyCategory')}
           </p>
         ) : (
           <StaggerChildren

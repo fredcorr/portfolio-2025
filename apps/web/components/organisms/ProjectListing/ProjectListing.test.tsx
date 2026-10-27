@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import React from 'react'
-import { ComponentTypeName, PageTypeName } from '@portfolio/types/base'
+import { ComponentTypeName, Locale, PageTypeName } from '@portfolio/types/base'
 import type { ProjectListingComponent } from '@portfolio/types/components'
 import type { PortableTextBlock } from '@portabletext/react'
 import ProjectListing from './ProjectListing'
@@ -70,7 +71,7 @@ const createProjectListing = (
 
 test('renders heading, subtitle, and project cards', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing()} />
+    withIntl(<ProjectListing {...createProjectListing()} />)
   )
 
   assert.match(markup, /Featured work/)
@@ -82,7 +83,7 @@ test('renders heading, subtitle, and project cards', () => {
 
 test('renders index badge on first card', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing()} />
+    withIntl(<ProjectListing {...createProjectListing()} />)
   )
 
   assert.match(markup, />01</)
@@ -90,7 +91,7 @@ test('renders index badge on first card', () => {
 
 test('second card has staggered offset class', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing()} />
+    withIntl(<ProjectListing {...createProjectListing()} />)
   )
 
   assert.match(markup, /md:mt-16/)
@@ -98,7 +99,9 @@ test('second card has staggered offset class', () => {
 
 test('shows More CTA when enabled', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing({ showCtaToProjects: true })} />
+    withIntl(
+      <ProjectListing {...createProjectListing({ showCtaToProjects: true })} />
+    )
   )
 
   assert.match(markup, /More/)
@@ -107,7 +110,9 @@ test('shows More CTA when enabled', () => {
 
 test('does not show CTA when disabled', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing({ showCtaToProjects: false })} />
+    withIntl(
+      <ProjectListing {...createProjectListing({ showCtaToProjects: false })} />
+    )
   )
 
   assert.doesNotMatch(markup, /href="\/projects"/)
@@ -115,12 +120,14 @@ test('does not show CTA when disabled', () => {
 
 test('renders empty state when there are no projects', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing
-      {...createProjectListing({
-        projects: [],
-        subtitle: block('Coming soon'),
-      })}
-    />
+    withIntl(
+      <ProjectListing
+        {...createProjectListing({
+          projects: [],
+          subtitle: block('Coming soon'),
+        })}
+      />
+    )
   )
 
   assert.match(markup, /Projects will appear here once they are published/)
@@ -128,7 +135,7 @@ test('renders empty state when there are no projects', () => {
 
 test('cards use square image, shadow, and above-image badge classes', () => {
   const markup = renderToStaticMarkup(
-    <ProjectListing {...createProjectListing()} />
+    withIntl(<ProjectListing {...createProjectListing()} />)
   )
 
   assert.match(markup, /aspect-square/)
@@ -137,4 +144,16 @@ test('cards use square image, shadow, and above-image badge classes', () => {
     markup,
     /shadow-\[16px_16px_36px_4px_rgba\(128,128,128,0\.54\)\]/
   )
+})
+
+test('More links to the projects page of the page language', () => {
+  const markup = renderToStaticMarkup(
+    withIntl(
+      <ProjectListing {...createProjectListing({ showCtaToProjects: true })} />,
+      Locale.Italian
+    )
+  )
+
+  assert.match(markup, /href="\/it\/projects"/)
+  assert.match(markup, />Altro</)
 })

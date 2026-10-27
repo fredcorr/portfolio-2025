@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import type { ImageGalleryComponent } from '@portfolio/types/components'
 
@@ -23,6 +24,7 @@ const ImageGallery = ({
   sectionId,
   componentIndex,
 }: ImageGalleryComponent) => {
+  const t = useTranslations()
   const galleryImages = (Array.isArray(images) && images) || []
   const galleryImagesWithUrl = galleryImages.filter(image =>
     Boolean(image.asset?.url)
@@ -79,7 +81,7 @@ const ImageGallery = ({
               hasOddImages && index === galleryImagesWithUrl.length - 1
             const src = image.asset?.url
             const dimensions = image.asset?.metadata?.dimensions
-            const altText = image.alt || 'Project gallery image'
+            const altText = image.alt || t('media.galleryImage')
 
             return (
               <SlideInStagger
@@ -109,7 +111,7 @@ const ImageGallery = ({
 
       {galleryImagesWithUrl.length === 0 && (
         <div className="md:col-span-12 border border-dashed border-black/10 bg-gray-50 px-6 py-10 text-center font-body text-body-lg text-black/70 dark:border-foreground/20 dark:bg-background dark:text-foreground/70">
-          Images will appear here once they are published.
+          {t('empty.images')}
         </div>
       )}
     </ComponentLayout>

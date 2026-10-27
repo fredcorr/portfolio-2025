@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import type { PortableTextBlock } from '@portabletext/react'
 
 import { RichTextSize } from '@/components/atoms/RichText/RichText'
@@ -42,14 +43,16 @@ const image = {
 
 test('renders image, icon, index, title, and subtitle', () => {
   const markup = renderToStaticMarkup(
-    <Card
-      title="Test Project"
-      subtitle={block('Details go here')}
-      href="/projects/test"
-      image={image}
-      iconName="sparkles"
-      index={0}
-    />
+    withIntl(
+      <Card
+        title="Test Project"
+        subtitle={block('Details go here')}
+        href="/projects/test"
+        image={image}
+        iconName="sparkles"
+        index={0}
+      />
+    )
   )
 
   assert.match(markup, /href="\/projects\/test"/)
@@ -62,13 +65,15 @@ test('renders image, icon, index, title, and subtitle', () => {
 
 test('respects sizing and spacing variants', () => {
   const markup = renderToStaticMarkup(
-    <Card
-      title="Sized Project"
-      subtitle={block('Sized body')}
-      spacing={CardSpacing.Roomy}
-      titleSize={CardTitleSize.Large}
-      subtitleSize={RichTextSize.Md}
-    />
+    withIntl(
+      <Card
+        title="Sized Project"
+        subtitle={block('Sized body')}
+        spacing={CardSpacing.Roomy}
+        titleSize={CardTitleSize.Large}
+        subtitleSize={RichTextSize.Md}
+      />
+    )
   )
 
   assert.match(markup, /text-heading-3/)
@@ -78,21 +83,21 @@ test('respects sizing and spacing variants', () => {
 
 test('CardSpacing.Spacious renders gap-8', () => {
   const markup = renderToStaticMarkup(
-    <Card title="Spacious Card" spacing={CardSpacing.Spacious} />
+    withIntl(<Card title="Spacious Card" spacing={CardSpacing.Spacious} />)
   )
 
   assert.match(markup, /gap-8/)
 })
 
 test('does not render an image when one is not provided', () => {
-  const markup = renderToStaticMarkup(<Card title="No Image Card" />)
+  const markup = renderToStaticMarkup(withIntl(<Card title="No Image Card" />))
 
   assert.doesNotMatch(markup, /<img/)
 })
 
 test('renders string subtitles as plain text', () => {
   const markup = renderToStaticMarkup(
-    <Card title="String Subtitle" subtitle="Plain text subtitle" />
+    withIntl(<Card title="String Subtitle" subtitle="Plain text subtitle" />)
   )
 
   assert.match(markup, /Plain text subtitle/)
@@ -100,7 +105,7 @@ test('renders string subtitles as plain text', () => {
 
 test('renders AnimationComponent as article when no href', () => {
   const markup = renderToStaticMarkup(
-    <Card title="Animated" AnimationComponent={AnimStub} />
+    withIntl(<Card title="Animated" AnimationComponent={AnimStub} />)
   )
 
   assert.match(markup, /<article/)
@@ -108,11 +113,13 @@ test('renders AnimationComponent as article when no href', () => {
 
 test('renders AnimationComponent as link when href is provided', () => {
   const markup = renderToStaticMarkup(
-    <Card
-      title="Animated Link"
-      href="/projects/test"
-      AnimationComponent={AnimStub}
-    />
+    withIntl(
+      <Card
+        title="Animated Link"
+        href="/projects/test"
+        AnimationComponent={AnimStub}
+      />
+    )
   )
 
   assert.match(markup, /href="\/projects\/test"/)
@@ -121,7 +128,7 @@ test('renders AnimationComponent as link when href is provided', () => {
 
 test('squareImage applies aspect-square, rounded-none, blur and scale transition classes', () => {
   const markup = renderToStaticMarkup(
-    <Card title="Square" image={image} squareImage />
+    withIntl(<Card title="Square" image={image} squareImage />)
   )
 
   assert.match(markup, /aspect-square/)
@@ -135,7 +142,7 @@ test('squareImage applies aspect-square, rounded-none, blur and scale transition
 
 test('imageShadow applies shadow and hover shadow transition classes', () => {
   const markup = renderToStaticMarkup(
-    <Card title="Shadow" image={image} imageShadow />
+    withIntl(<Card title="Shadow" image={image} imageShadow />)
   )
 
   assert.match(
@@ -152,7 +159,7 @@ test('imageShadow applies shadow and hover shadow transition classes', () => {
 
 test('indexAboveImage renders badge above image with mix-blend-difference', () => {
   const markup = renderToStaticMarkup(
-    <Card title="Badge" image={image} index={0} indexAboveImage />
+    withIntl(<Card title="Badge" image={image} index={0} indexAboveImage />)
   )
 
   assert.match(markup, /mix-blend-difference/)
@@ -165,10 +172,10 @@ test('indexAboveImage renders badge above image with mix-blend-difference', () =
 
 test('indexAboveImage suppresses the in-content icon row', () => {
   const withAbove = renderToStaticMarkup(
-    <Card title="Above" image={image} index={0} indexAboveImage />
+    withIntl(<Card title="Above" image={image} index={0} indexAboveImage />)
   )
   const withoutAbove = renderToStaticMarkup(
-    <Card title="Below" image={image} index={0} />
+    withIntl(<Card title="Below" image={image} index={0} />)
   )
 
   // Without indexAboveImage, index renders inside the content area (text-foreground/70)

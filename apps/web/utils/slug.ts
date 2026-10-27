@@ -1,4 +1,5 @@
 import type { BreadcrumbItem } from '@portfolio/types/components'
+import { fromCmsSlug, localePrefix } from '@portfolio/utils/locale'
 
 interface FormatSlugSegmentTitleOptions {
   delimiter?: RegExp
@@ -43,7 +44,11 @@ export const slugToBreadcrumbs = (
     return []
   }
 
-  const segments = normalized.split('/').filter(Boolean)
+  // The stored slug carries the locale prefix (`it/journals/foo`). The
+  // prefix is part of every href but not a crumb of its own: an Italian page
+  // gets the same trail as its English counterpart, not an extra "It".
+  const { locale, segments } = fromCmsSlug(normalized)
+  const prefix = localePrefix(locale)
 
   if (segments.length === 0) {
     return []
@@ -53,7 +58,7 @@ export const slugToBreadcrumbs = (
 
   return segments.map((segment, index) => {
     const isLast = index === segments.length - 1
-    const href = `/${segments.slice(0, index + 1).join('/')}`
+    const href = `/${[prefix, ...segments.slice(0, index + 1)].filter(Boolean).join('/')}`
     const label =
       isLast && overrideLabel ? overrideLabel : formatSlugSegmentTitle(segment)
 

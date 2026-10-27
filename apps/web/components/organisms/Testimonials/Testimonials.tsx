@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 import 'swiper/css'
 import 'swiper/css/effect-creative'
@@ -73,6 +74,7 @@ const Testimonials = ({
   sectionId,
   componentIndex,
 }: TestimonialsComponent) => {
+  const t = useTranslations()
   const list = Array.isArray(testimonials) ? testimonials : []
   const headingId = makeComponentId({
     value: _id || _key,
@@ -118,14 +120,14 @@ const Testimonials = ({
     >
       {total === 0 ? (
         <div className="md:col-span-12 border border-dashed border-background/10 bg-background/5 px-6 py-10 text-center font-body text-body-lg text-background/70">
-          Testimonials will appear here once they are published.
+          {t('empty.testimonials')}
         </div>
       ) : (
         <div className="md:col-span-12 flex flex-col gap-y-8 lg:gap-y-10">
           {/* Section header */}
           <header className="flex flex-col gap-4 border-b border-background/12 pb-7">
             <span className="flex items-center gap-3 font-heading text-label tracking-[0.14em] uppercase text-background/70 before:inline-block before:w-1.5 before:h-1.5 before:rounded-full before:bg-background before:opacity-70">
-              Testimonials
+              {t('testimonials.kicker')}
             </span>
             {title?.heading && (
               <h2
@@ -144,7 +146,7 @@ const Testimonials = ({
               {String(total).padStart(2, '0')}
             </span>
             <span className="flex-1 h-px bg-background/18" />
-            <span>Selected client feedback</span>
+            <span>{t('testimonials.heading')}</span>
           </div>
 
           {/* Carousel — server-rendered as a single static quote, upgraded to
@@ -175,8 +177,8 @@ const Testimonials = ({
               onSwiper={setSwiperInstance}
               onSlideChange={s => setActiveIdx(s.realIndex)}
               a11y={{
-                prevSlideMessage: 'Previous testimonial',
-                nextSlideMessage: 'Next testimonial',
+                prevSlideMessage: t('testimonials.previous'),
+                nextSlideMessage: t('testimonials.next'),
               }}
               className="w-full"
             >
@@ -223,14 +225,16 @@ const Testimonials = ({
               <div
                 className="flex gap-1.5 items-center justify-self-start md:justify-self-end"
                 role="tablist"
-                aria-label="Select testimonial"
+                aria-label={t('testimonials.select')}
               >
                 {list.map((_, i) => (
                   <button
                     key={i}
                     role="tab"
                     aria-selected={i === activeIdx}
-                    aria-label={`Go to testimonial ${i + 1}`}
+                    aria-label={t('testimonials.goTo', {
+                      number: String(i + 1),
+                    })}
                     onClick={() => swiperInstance?.slideToLoop(i)}
                     className={cn(
                       'h-0.5 rounded-none bg-background transition-all duration-200 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background',
@@ -247,14 +251,14 @@ const Testimonials = ({
               <div className="flex gap-2 items-center justify-self-start md:justify-self-end">
                 <button
                   onClick={() => swiperInstance?.slidePrev()}
-                  aria-label="Previous testimonial"
+                  aria-label={t('testimonials.previous')}
                   className="w-11 h-11 border border-background/18 flex items-center justify-center text-background hover:bg-background/8 hover:border-background/35 active:scale-[0.96] transition-[background-color,border-color,transform] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background"
                 >
                   <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                 </button>
                 <button
                   onClick={() => swiperInstance?.slideNext()}
-                  aria-label="Next testimonial"
+                  aria-label={t('testimonials.next')}
                   className="w-11 h-11 border border-background/18 flex items-center justify-center text-background hover:bg-background/8 hover:border-background/35 active:scale-[0.96] transition-[background-color,border-color,transform] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background"
                 >
                   <ChevronRight className="w-4 h-4" aria-hidden="true" />

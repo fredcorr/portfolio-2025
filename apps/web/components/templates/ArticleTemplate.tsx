@@ -1,11 +1,12 @@
 import type { ArticlePageDocument } from '@portfolio/types/pages'
+import { useTranslations } from 'next-intl'
 import ArticleIntro from '@/components/organisms/ArticleIntro/ArticleIntro'
 import ArticleFeaturedImage from '@/components/organisms/ArticleFeaturedImage/ArticleFeaturedImage'
 import ArticleContent from '@/components/organisms/ArticleContent/ArticleContent'
 import ArticleRelated from '@/components/organisms/ArticleRelated/ArticleRelated'
 import { RenderOrganism } from '@/components/hoc/RenderOrganism'
 import useFormatDate from '@/utils/use-format-date'
-import { getReadTimeLabel } from '@/utils/calculate-read-time'
+import { calculateReadTime } from '@/utils/calculate-read-time'
 import { buildPageUrl } from '@/utils/slug'
 import { getSiteUrl } from '@/utils/get-site-url'
 
@@ -13,6 +14,7 @@ export const ArticleTemplate = (props: ArticlePageDocument) => {
   const slug = props.slug?.current
   const title = props.seoTitle || props.title
   const formatDate = useFormatDate()
+  const t = useTranslations('common')
   const dateValue = props._updatedAt || props._createdAt
   const dateLabel = formatDate(dateValue)
   const publishedDate = dateValue ? new Date(dateValue) : undefined
@@ -20,7 +22,9 @@ export const ArticleTemplate = (props: ArticlePageDocument) => {
     publishedDate && !Number.isNaN(publishedDate.getTime())
       ? publishedDate.getFullYear()
       : undefined
-  const readTimeLabel = getReadTimeLabel(props.articleContent)
+  const readMinutes = calculateReadTime(props.articleContent)?.minutes
+  const readTimeLabel =
+    readMinutes != null ? t('readTime', { minutes: readMinutes }) : undefined
   const heroImage = props.heroImage || props.seoImage
   const shareUrl = slug ? buildPageUrl(getSiteUrl(), slug) : undefined
   const deck = props.seoDescription

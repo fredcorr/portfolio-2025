@@ -57,17 +57,4 @@ export const calculateReadTime = (
   return { minutes, words }
 }
 
-export const getReadTimeLabel = (
-  content?: PortableTextBlock[] | null,
-  wordsPerMinute: number = WORDS_PER_MINUTE
-): string | undefined => {
-  const result = calculateReadTime(content, wordsPerMinute)
-
-  if (!result) {
-    return undefined
-  }
-
-  return `${result.minutes} min read`
-}
-
 export default calculateReadTime

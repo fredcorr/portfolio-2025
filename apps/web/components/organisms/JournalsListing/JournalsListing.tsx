@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import type { JournalsListingComponent } from '@portfolio/types/components'
 import { locale as rootLocale } from 'next/root-params'
 import { isLocale } from '@portfolio/utils/locale'
@@ -26,6 +27,7 @@ export default async function JournalsListing({
   })
 
   const total = initialData?.total ?? 0
+  const t = await getTranslations('listing')
   // The client fetches further pages itself, and client components can't read
   // root params — so the server hands it the page's locale.
   const routeLocale = await rootLocale()
@@ -69,7 +71,7 @@ export default async function JournalsListing({
             {total}
           </strong>
           <span className="font-heading text-label tracking-[0.06em] text-foreground/70">
-            entries
+            {t('entries', { count: total })}
           </span>
         </FadeIn>
       </div>

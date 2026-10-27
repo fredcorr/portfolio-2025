@@ -25,9 +25,21 @@ const flatten = (tree: Tree, prefix = ''): Map<string, string> => {
   return leaves
 }
 
-/** ICU argument names (`{name}`, `{count, plural, …}`) used by a message. */
+/**
+ * ICU argument names (`{name}`, `{count, plural, …}`) used by a message. A
+ * `{…}` straight after a plural/select key (`one {entry}`, `=0 {none}`) is a
+ * branch body, not an argument, so it is skipped.
+ */
 const argumentsOf = (message: string) =>
-  [...message.matchAll(/\{\s*(\w+)\s*[,}]/g)].map(match => match[1]).sort()
+  [
+    ...new Set(
+      [
+        ...message.matchAll(
+          /(?<!\b(?:zero|one|two|few|many|other|=\d+)\s*)\{\s*(\w+)\s*[,}]/g
+        ),
+      ].map(match => match[1])
+    ),
+  ].sort()
 
 const english = flatten(en)
 const italian = flatten(it)

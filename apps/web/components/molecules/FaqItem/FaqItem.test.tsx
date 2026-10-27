@@ -2,12 +2,13 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import { faqItemMock } from '@/mocks/molecules/faq-item'
 import FaqItem from './FaqItem'
 
 test('renders question and answer using an accordion button', () => {
-  const markup = renderToStaticMarkup(<FaqItem {...faqItemMock} />)
+  const markup = renderToStaticMarkup(withIntl(<FaqItem {...faqItemMock} />))
 
   assert.match(markup, /<button/)
   assert.match(markup, /What is included\\?/)
@@ -18,7 +19,7 @@ test('renders question and answer using an accordion button', () => {
 
 test('returns null when question and answer are missing', () => {
   const markup = renderToStaticMarkup(
-    <FaqItem question={undefined} answer={undefined} />
+    withIntl(<FaqItem question={undefined} answer={undefined} />)
   )
 
   assert.equal(markup, '')

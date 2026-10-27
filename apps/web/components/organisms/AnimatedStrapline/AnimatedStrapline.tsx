@@ -1,8 +1,8 @@
+import { useTranslations } from 'next-intl'
 import type { AnimatedStraplineComponent } from '@portfolio/types/components'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import { buildStraplineLoop } from '@/utils/build-strapline-loop'
 
-const DEFAULT_STRAPLINE_TEXT = 'Visual design for digital experiences'
 const STRAPLINE_REPEAT_COUNT = 4
 
 const AnimatedStrapline = ({
@@ -11,7 +11,8 @@ const AnimatedStrapline = ({
   sectionId,
   componentIndex,
 }: AnimatedStraplineComponent) => {
-  const straplineText = strapline?.trim() || DEFAULT_STRAPLINE_TEXT
+  const t = useTranslations('strapline')
+  const straplineText = strapline?.trim() || t('default')
   const straplineLoop = buildStraplineLoop(straplineText, {
     repeat: STRAPLINE_REPEAT_COUNT,
   })
@@ -27,7 +28,7 @@ const AnimatedStrapline = ({
       sectionId={sectionId}
       componentKey={_key}
       componentIndex={componentIndex}
-      aria-label="Animated strapline"
+      aria-label={t('label')}
       className="!bg-transparent text-background !py-0"
       contentClassName="gap-y-0 px-0"
       fullBleed
@@ -71,4 +72,4 @@ const AnimatedStrapline = ({
 }
 
 export default AnimatedStrapline
-export { AnimatedStrapline, DEFAULT_STRAPLINE_TEXT }
+export { AnimatedStrapline }

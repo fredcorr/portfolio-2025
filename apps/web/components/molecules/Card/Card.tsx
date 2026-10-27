@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import type { PortableTextBlock } from '@portabletext/react'
 import Link from 'next/link'
 
@@ -104,6 +105,7 @@ const Card = ({
   animationProps,
   ...props
 }: CardProps) => {
+  const t = useTranslations('common')
   const formattedIndex = formatIndex(index)
   const displayIndex = indexLabel ?? formattedIndex
   const hasIconRow = !indexAboveImage && (iconName || displayIndex || tag)
@@ -164,7 +166,9 @@ const Card = ({
             {formattedIndex && (
               <div
                 className="absolute right-6 top-[-16px] z-10 border-2 border-white mix-blend-difference px-4 py-1.5"
-                aria-label={`Project ${Number(formattedIndex)}`}
+                aria-label={t('projectNumber', {
+                  number: String(Number(formattedIndex)),
+                })}
               >
                 <span className="font-heading text-body-lg text-white">
                   {formattedIndex}
@@ -214,7 +218,7 @@ const Card = ({
                 <Icon
                   name={iconName}
                   className={cn('size-6 text-foreground', iconClassName)}
-                  title={`${title} icon`}
+                  title={t('iconTitle', { title: title ?? '' })}
                 />
               </span>
             )}
@@ -222,7 +226,9 @@ const Card = ({
               <span
                 className="font-heading text-body-lg text-foreground/70"
                 {...(!indexLabel && {
-                  'aria-label': `Project ${Number(displayIndex)}`,
+                  'aria-label': t('projectNumber', {
+                    number: String(Number(displayIndex)),
+                  }),
                 })}
               >
                 {displayIndex}
@@ -262,7 +268,7 @@ const Card = ({
             )}
             {footerReadTime != null && (
               <span className="font-heading text-label tracking-[0.04em] text-foreground/70">
-                {footerReadTime} min read
+                {t('readTime', { minutes: footerReadTime })}
               </span>
             )}
           </div>
@@ -286,7 +292,7 @@ const Card = ({
       >
         <Link
           href={href}
-          aria-label={`View ${title}`}
+          aria-label={t('view', { title: title ?? '' })}
           className={linkClassName}
         >
           {cardBody}
@@ -301,7 +307,7 @@ const Card = ({
   const compProps: PolymorphicProps = {
     className: compClassName,
     ...(AnimationComponent && { as: href ? Link : asProp }),
-    ...(href && { href, 'aria-label': `View ${title}` }),
+    ...(href && { href, 'aria-label': t('view', { title: title ?? '' }) }),
   }
 
   return (

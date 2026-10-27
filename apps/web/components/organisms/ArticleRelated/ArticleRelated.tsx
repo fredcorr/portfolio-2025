@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 // import Link from 'next/link' // re-enable with the CTA below
 import type {
   ArticleRelatedProps,
@@ -97,6 +98,8 @@ function PostCard({
 }
 
 const ArticleRelated: React.FC<Props> = ({ relatedArticles, className }) => {
+  const t = useTranslations('article')
+
   if (!relatedArticles || relatedArticles.length === 0) return null
 
   return (
@@ -113,7 +116,7 @@ const ArticleRelated: React.FC<Props> = ({ relatedArticles, className }) => {
           className="font-heading font-normal leading-none tracking-[-0.025em] text-black dark:text-foreground"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
         >
-          Continue reading
+          {t('continueReading')}
         </h2>
         {/* CTA — hidden until /articles route is ready */}
         {/* <Link

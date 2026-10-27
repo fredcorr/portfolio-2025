@@ -69,5 +69,87 @@
     "invalidFormat": "Invalid format",
     "invalidDate": "Use YYYY-MM-DD format",
     "selectOption": "Please select an option"
+  },
+  "common": {
+    "readTime": "{minutes, number} min read",
+    "view": "View {title}",
+    "projectNumber": "Project {number}",
+    "iconTitle": "{title} icon",
+    "more": "More"
+  },
+  "article": {
+    "authorFallback": "Author",
+    "writtenBy": "Written by",
+    "published": "Published",
+    "readingTime": "Reading time",
+    "topics": "Topics",
+    "edition": "Edition",
+    "end": "End",
+    "previous": "Previous",
+    "previousArticle": "Previous article",
+    "next": "Next",
+    "nextArticle": "Next article",
+    "actions": "Article actions",
+    "share": "Share",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "bookmark": "Bookmark",
+    "continueReading": "Continue reading",
+    "featuredImage": "Featured image"
+  },
+  "listing": {
+    "filterLabel": "Filter by topic",
+    "filterPlaceholder": "Filter by Topic",
+    "removeFilter": "Remove {topic} filter",
+    "loadError": "Couldn't load articles — try again.",
+    "retry": "Retry",
+    "emptyCategory": "No entries in this category yet.",
+    "entries": "{count, plural, one {entry} other {entries}}"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Prev",
+    "next": "Next"
+  },
+  "select": {
+    "placeholder": "Select…"
+  },
+  "empty": {
+    "projects": "Projects will appear here once they are published.",
+    "highlights": "Highlights will appear here once they are published.",
+    "cards": "Cards will appear here once they are configured.",
+    "process": "Process steps will appear here once they are published.",
+    "images": "Images will appear here once they are published.",
+    "articles": "Articles will appear here once they are published.",
+    "testimonials": "Testimonials will appear here once they are published."
+  },
+  "testimonials": {
+    "kicker": "Testimonials",
+    "heading": "Selected client feedback",
+    "previous": "Previous testimonial",
+    "next": "Next testimonial",
+    "select": "Select testimonial",
+    "goTo": "Go to testimonial {number}"
+  },
+  "hero": {
+    "scroll": "Scroll",
+    "scrollLabel": "Scroll to next section",
+    "resume": "My resume",
+    "resumeIcon": "Resume",
+    "emailIcon": "Email"
+  },
+  "strapline": {
+    "default": "Visual design for digital experiences",
+    "label": "Animated strapline"
+  },
+  "media": {
+    "galleryImage": "Project gallery image",
+    "toolLogo": "{title} logo",
+    "toolLogoFallback": "Tool logo",
+    "cardFallbackTitle": "Card {number}"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb",
+    "home": "Home"
   }
 }

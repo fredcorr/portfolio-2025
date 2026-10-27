@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import type {
   JournalsFeedComponent,
   JournalsFeedArticle,
@@ -8,7 +9,7 @@ import { makeComponentId } from '@/utils/makeComponentId'
 import { getLinkHref } from '@/utils/get-link-href'
 import type { DateTimeFormatOptions } from 'next-intl'
 import useFormatDate from '@/utils/use-format-date'
-import { getReadTimeLabel } from '@/utils/calculate-read-time'
+import { calculateReadTime } from '@/utils/calculate-read-time'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 
@@ -29,14 +30,17 @@ interface ProcessedArticle {
 
 const processArticles = (
   articles: JournalsFeedArticle[],
-  formatDate: ReturnType<typeof useFormatDate>
+  formatDate: ReturnType<typeof useFormatDate>,
+  formatReadTime: (minutes?: number) => string | undefined
 ): ProcessedArticle[] =>
   articles.map((article, i) => ({
     source: article,
     num: `N° ${(i + 1).toString().padStart(3, '0')}`,
     href: article.slug?.current ? `/${article.slug.current}` : undefined,
     date: formatDate(article._createdAt, DATE_FORMAT),
-    readTime: getReadTimeLabel(article.articleContent),
+    readTime: formatReadTime(
+      calculateReadTime(article.articleContent)?.minutes
+    ),
     topic: article.tags?.join(' · '),
   }))
 
@@ -58,7 +62,12 @@ const JournalsFeed = ({
 
   const ctaHref = getLinkHref(ctaLink)
   const formatDate = useFormatDate()
-  const processedArticles = processArticles(articles ?? [], formatDate)
+  const t = useTranslations()
+  const processedArticles = processArticles(
+    articles ?? [],
+    formatDate,
+    minutes => (minutes != null ? t('common.readTime', { minutes }) : undefined)
+  )
 
   return (
     <ComponentLayout
@@ -161,7 +170,7 @@ const JournalsFeed = ({
         </ol>
       ) : (
         <div className="rounded-3xl bg-foreground/5 px-6 py-10 text-foreground/70">
-          Articles will appear here once they are published.
+          {t('empty.articles')}
         </div>
       )}
     </ComponentLayout>

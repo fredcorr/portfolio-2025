@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import Button from '@/components/atoms/Button/Button'
 import { cn } from '@/utils/cn'
 
@@ -56,6 +57,7 @@ const Pagination = ({
   onPageChange,
   className,
 }: PaginationProps) => {
+  const t = useTranslations('pagination')
   if (totalPages <= 1) return null
 
   return (
@@ -64,7 +66,7 @@ const Pagination = ({
         'flex items-center justify-center md:justify-end gap-1',
         className
       )}
-      aria-label="Pagination"
+      aria-label={t('label')}
     >
       <Button
         variant="outline"
@@ -73,7 +75,7 @@ const Pagination = ({
         className="inline-flex items-center gap-2 px-[18px]"
       >
         <Chevron direction="left" />
-        Prev
+        {t('previous')}
       </Button>
 
       {buildPageNumbers(currentPage, totalPages).map((item, i) =>
@@ -107,7 +109,7 @@ const Pagination = ({
         disabled={currentPage === totalPages}
         className="inline-flex items-center gap-2 px-[18px]"
       >
-        Next
+        {t('next')}
         <Chevron direction="right" />
       </Button>
     </nav>

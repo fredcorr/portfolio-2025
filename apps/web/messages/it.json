@@ -69,5 +69,87 @@
     "invalidFormat": "Formato non valido",
     "invalidDate": "Usa il formato AAAA-MM-GG",
     "selectOption": "Seleziona un'opzione"
+  },
+  "common": {
+    "readTime": "{minutes, number} min di lettura",
+    "view": "Vedi {title}",
+    "projectNumber": "Progetto {number}",
+    "iconTitle": "Icona {title}",
+    "more": "Altro"
+  },
+  "article": {
+    "authorFallback": "Autore",
+    "writtenBy": "Scritto da",
+    "published": "Pubblicato",
+    "readingTime": "Tempo di lettura",
+    "topics": "Argomenti",
+    "edition": "Edizione",
+    "end": "Fine",
+    "previous": "Precedente",
+    "previousArticle": "Articolo precedente",
+    "next": "Successivo",
+    "nextArticle": "Articolo successivo",
+    "actions": "Azioni sull'articolo",
+    "share": "Condividi",
+    "copyLink": "Copia link",
+    "copied": "Copiato!",
+    "bookmark": "Salva",
+    "continueReading": "Continua a leggere",
+    "featuredImage": "Immagine in evidenza"
+  },
+  "listing": {
+    "filterLabel": "Filtra per argomento",
+    "filterPlaceholder": "Filtra per argomento",
+    "removeFilter": "Rimuovi il filtro {topic}",
+    "loadError": "Impossibile caricare gli articoli — riprova.",
+    "retry": "Riprova",
+    "emptyCategory": "Ancora nessun articolo in questa categoria.",
+    "entries": "{count, plural, one {articolo} other {articoli}}"
+  },
+  "pagination": {
+    "label": "Paginazione",
+    "previous": "Prec.",
+    "next": "Succ."
+  },
+  "select": {
+    "placeholder": "Seleziona…"
+  },
+  "empty": {
+    "projects": "I progetti appariranno qui una volta pubblicati.",
+    "highlights": "I punti salienti appariranno qui una volta pubblicati.",
+    "cards": "Le card appariranno qui una volta configurate.",
+    "process": "Le fasi del processo appariranno qui una volta pubblicate.",
+    "images": "Le immagini appariranno qui una volta pubblicate.",
+    "articles": "Gli articoli appariranno qui una volta pubblicati.",
+    "testimonials": "Le testimonianze appariranno qui una volta pubblicate."
+  },
+  "testimonials": {
+    "kicker": "Testimonianze",
+    "heading": "Cosa dicono i clienti",
+    "previous": "Testimonianza precedente",
+    "next": "Testimonianza successiva",
+    "select": "Seleziona una testimonianza",
+    "goTo": "Vai alla testimonianza {number}"
+  },
+  "hero": {
+    "scroll": "Scorri",
+    "scrollLabel": "Scorri alla sezione successiva",
+    "resume": "Il mio CV",
+    "resumeIcon": "CV",
+    "emailIcon": "Email"
+  },
+  "strapline": {
+    "default": "Visual design per esperienze digitali",
+    "label": "Strapline animata"
+  },
+  "media": {
+    "galleryImage": "Immagine della galleria del progetto",
+    "toolLogo": "Logo {title}",
+    "toolLogoFallback": "Logo dello strumento",
+    "cardFallbackTitle": "Card {number}"
+  },
+  "breadcrumbs": {
+    "label": "Percorso",
+    "home": "Home"
   }
 }

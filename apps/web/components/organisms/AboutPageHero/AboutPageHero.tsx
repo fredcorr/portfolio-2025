@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import type { AboutPageHeroComponent } from '@portfolio/types/components'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
@@ -25,6 +26,7 @@ const AboutPageHero = ({
   sectionId,
   componentIndex,
 }: AboutPageHeroComponent) => {
+  const t = useTranslations('hero')
   const headingId = makeComponentId({
     value: _id || _key,
     prefix: 'about-hero',
@@ -33,9 +35,9 @@ const AboutPageHero = ({
   const headingLevel = title?.headingLevel
   const resolvedResumeUrl = resumeUrl?.trim()
   const contactEmail = getContactEmail()
-  const ctaLabel = resolvedResumeUrl ? 'My resume' : contactEmail
+  const ctaLabel = resolvedResumeUrl ? t('resume') : contactEmail
   const ctaHref = resolvedResumeUrl || `mailto:${contactEmail}`
-  const ctaIconTitle = resolvedResumeUrl ? 'Resume' : 'Email'
+  const ctaIconTitle = resolvedResumeUrl ? t('resumeIcon') : t('emailIcon')
   const metaItems = [location, timezone, languages].filter(Boolean)
 
   return (

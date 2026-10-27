@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import Select from './Select'
 
@@ -12,12 +13,14 @@ const options = [
 
 test('renders the placeholder when nothing is selected', () => {
   const markup = renderToStaticMarkup(
-    <Select
-      instanceId="t"
-      label="Choose one"
-      placeholder="Pick…"
-      options={options}
-    />
+    withIntl(
+      <Select
+        instanceId="t"
+        label="Choose one"
+        placeholder="Pick…"
+        options={options}
+      />
+    )
   )
 
   assert.match(markup, /Pick…/)
@@ -27,7 +30,9 @@ test('renders the placeholder when nothing is selected', () => {
 
 test('renders the selected single value', () => {
   const markup = renderToStaticMarkup(
-    <Select instanceId="t" label="Choose one" options={options} value="a" />
+    withIntl(
+      <Select instanceId="t" label="Choose one" options={options} value="a" />
+    )
   )
 
   assert.match(markup, /Option A/)
@@ -35,12 +40,14 @@ test('renders the selected single value', () => {
 
 test('exposes the error via an alert', () => {
   const markup = renderToStaticMarkup(
-    <Select
-      instanceId="t"
-      label="Choose one"
-      options={options}
-      error="Selection required"
-    />
+    withIntl(
+      <Select
+        instanceId="t"
+        label="Choose one"
+        options={options}
+        error="Selection required"
+      />
+    )
   )
 
   assert.match(markup, /Selection required/)
@@ -49,14 +56,16 @@ test('exposes the error via an alert', () => {
 
 test('multi variant renders selected values', () => {
   const markup = renderToStaticMarkup(
-    <Select
-      instanceId="t"
-      isMulti
-      aria-label="Filter"
-      options={options}
-      value={['a', 'b']}
-      onChange={() => {}}
-    />
+    withIntl(
+      <Select
+        instanceId="t"
+        isMulti
+        aria-label="Filter"
+        options={options}
+        value={['a', 'b']}
+        onChange={() => {}}
+      />
+    )
   )
 
   assert.match(markup, /Option A/)

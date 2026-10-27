@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import React from 'react'
 import { ComponentTypeName, PageTypeName } from '@portfolio/types/base'
 import type { WorkIndexComponent } from '@portfolio/types/components'
@@ -72,52 +73,68 @@ const createWorkIndex = (
 })
 
 test('renders label and categoryLabel', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /The Work/)
   assert.match(markup, /Development/)
 })
 
 test('renders heading', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /WORK/)
 })
 
 test('renders subtitle', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /Built sharp/)
 })
 
 test('renders all project rows', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /Senta/)
   assert.match(markup, /Crtly/)
 })
 
 test('renders index badges for first and second project', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, />01</)
   assert.match(markup, />02</)
 })
 
 test('renders project links', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /href="projects\/senta"/)
 })
 
 test('renders project tags from name.current', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /Mobile App/)
   assert.match(markup, /Web App/)
 })
 
 test('renders project year', () => {
-  const markup = renderToStaticMarkup(<WorkIndex {...createWorkIndex()} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<WorkIndex {...createWorkIndex()} />)
+  )
   assert.match(markup, /2025/)
 })
 
 test('renders empty state when no projects', () => {
   const markup = renderToStaticMarkup(
-    <WorkIndex {...createWorkIndex({ projects: [] })} />
+    withIntl(<WorkIndex {...createWorkIndex({ projects: [] })} />)
   )
   assert.match(markup, /Projects will appear here once they are published/)
 })
