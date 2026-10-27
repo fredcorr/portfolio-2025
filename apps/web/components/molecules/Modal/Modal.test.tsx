@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import Modal from './Modal'
 
@@ -24,7 +25,7 @@ const portableDescription = [
 
 test('returns null markup when closed', () => {
   const markup = renderToStaticMarkup(
-    <Modal isOpen={false} onClose={() => {}} />
+    withIntl(<Modal isOpen={false} onClose={() => {}} />)
   )
 
   assert.equal(markup, '')
@@ -32,14 +33,16 @@ test('returns null markup when closed', () => {
 
 test('renders success variant with title and description', () => {
   const markup = renderToStaticMarkup(
-    <Modal
-      isOpen
-      title="All good"
-      description={portableDescription}
-      onClose={() => {}}
-      variant="success"
-      actionLabel="Close"
-    />
+    withIntl(
+      <Modal
+        isOpen
+        title="All good"
+        description={portableDescription}
+        onClose={() => {}}
+        variant="success"
+        actionLabel="Close"
+      />
+    )
   )
 
   assert.match(markup, /All good/)
@@ -49,14 +52,16 @@ test('renders success variant with title and description', () => {
 
 test('renders error variant styles', () => {
   const markup = renderToStaticMarkup(
-    <Modal
-      isOpen
-      title="Error occurred"
-      description={portableDescription}
-      onClose={() => {}}
-      variant="error"
-      actionLabel="Close"
-    />
+    withIntl(
+      <Modal
+        isOpen
+        title="Error occurred"
+        description={portableDescription}
+        onClose={() => {}}
+        variant="error"
+        actionLabel="Close"
+      />
+    )
   )
 
   assert.match(markup, /Error occurred/)

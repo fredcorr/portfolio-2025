@@ -6,12 +6,13 @@ import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import { Heading } from '@/components/atoms/Heading/Heading'
 import { makeComponentId } from '@/utils/makeComponentId'
 import { getLinkHref } from '@/utils/get-link-href'
-import { formatDate } from '@/utils/format-date'
+import type { DateTimeFormatOptions } from 'next-intl'
+import useFormatDate from '@/utils/use-format-date'
 import { getReadTimeLabel } from '@/utils/calculate-read-time'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 
-const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+const DATE_FORMAT: DateTimeFormatOptions = {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
@@ -26,12 +27,15 @@ interface ProcessedArticle {
   topic: string | undefined
 }
 
-const processArticles = (articles: JournalsFeedArticle[]): ProcessedArticle[] =>
+const processArticles = (
+  articles: JournalsFeedArticle[],
+  formatDate: ReturnType<typeof useFormatDate>
+): ProcessedArticle[] =>
   articles.map((article, i) => ({
     source: article,
     num: `N° ${(i + 1).toString().padStart(3, '0')}`,
     href: article.slug?.current ? `/${article.slug.current}` : undefined,
-    date: formatDate({ value: article._createdAt, options: DATE_FORMAT }),
+    date: formatDate(article._createdAt, DATE_FORMAT),
     readTime: getReadTimeLabel(article.articleContent),
     topic: article.tags?.join(' · '),
   }))
@@ -53,7 +57,8 @@ const JournalsFeed = ({
   })
 
   const ctaHref = getLinkHref(ctaLink)
-  const processedArticles = processArticles(articles ?? [])
+  const formatDate = useFormatDate()
+  const processedArticles = processArticles(articles ?? [], formatDate)
 
   return (
     <ComponentLayout

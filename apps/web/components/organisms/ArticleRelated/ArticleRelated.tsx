@@ -8,7 +8,7 @@ import Image from '@/components/atoms/Image/Image'
 import Icon from '@/components/atoms/Icon/Icon'
 import { buildPageUrl } from '@/utils/slug'
 import { getSiteUrl } from '@/utils/get-site-url'
-import { formatDate } from '@/utils/format-date'
+import useFormatDate from '@/utils/use-format-date'
 import { cn } from '@/utils/cn'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 
@@ -31,12 +31,11 @@ function PostCard({
   const href = slug ? buildPageUrl(getSiteUrl(), slug) : '#'
   const imageUrl = article.heroImage?.asset?.url
   const imageAlt = article.heroImage?.alt || article.title || ''
-  const dateStr = article._createdAt
-    ? formatDate({
-        value: article._createdAt,
-        options: { year: 'numeric', month: 'short' },
-      })
-    : undefined
+  const formatDate = useFormatDate()
+  const dateStr = formatDate(article._createdAt, {
+    year: 'numeric',
+    month: 'short',
+  })
   const firstTag = article.tags?.[0]
   const editionLabel =
     article.editionNumber != null

@@ -14,6 +14,7 @@ const ArticleIntro: React.FC<ArticleIntroProps> = ({
   slug,
   title,
   dateLabel,
+  publishedYear,
   readTimeLabel,
   tags,
   deck,
@@ -86,6 +87,7 @@ const ArticleIntro: React.FC<ArticleIntroProps> = ({
         <ArticleMeta
           author={author}
           dateLabel={dateLabel}
+          publishedYear={publishedYear}
           readTimeLabel={readTimeLabel}
           tags={tags}
           editionNumber={editionNumber}

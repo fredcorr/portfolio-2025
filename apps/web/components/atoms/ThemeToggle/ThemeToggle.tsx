@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/utils/cn'
 import Icon from '../Icon/Icon'
 
@@ -50,6 +51,7 @@ const resolvePreferredTheme = (): ThemeValue => {
 }
 
 export const ThemeToggle = () => {
+  const t = useTranslations('theme')
   const [theme, setTheme] = useState<ThemeValue>(Theme.Light)
   const [isMounted, setIsMounted] = useState(false)
 
@@ -88,7 +90,7 @@ export const ThemeToggle = () => {
           'hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black',
           'dark:border-white/10 dark:bg-gray-50 dark:text-black dark:focus-visible:outline-white'
         )}
-        aria-label={isDark ? 'Activate light theme' : 'Activate dark theme'}
+        aria-label={isDark ? t('activateLight') : t('activateDark')}
       >
         <span aria-hidden="true" className="text-lg">
           <Icon name={isDark ? 'sun' : 'moon'} />

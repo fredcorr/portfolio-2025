@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import type { FooterProps } from '@portfolio/types/components'
 import Icon from '@/components/atoms/Icon/Icon'
 import { cn } from '@/utils/cn'
@@ -15,12 +16,13 @@ const Footer: React.FC<FooterProps> = ({
   year,
   className,
 }) => {
+  const t = useTranslations('footer')
   const hasEmail = Boolean(email)
   const hasSocialLinks = Boolean(socialLinks?.length)
   const hasNavItems = Boolean(navigationItems?.length)
   const availabilityLabel = availabilityText
-    ? `Open for projects · ${availabilityText}`
-    : 'Open for projects'
+    ? t('availableUntil', { availability: availabilityText })
+    : t('available')
 
   return (
     <footer
@@ -45,14 +47,16 @@ const Footer: React.FC<FooterProps> = ({
               </span>
             )}
             <h2 className="max-w-[18ch] font-heading text-heading-1 font-normal leading-[1.02] tracking-[-0.035em] text-[#f5f5f5] xl:text-[clamp(2.25rem,5vw,4rem)]">
-              Let&rsquo;s <em className="not-italic">talk.</em>
+              {t.rich('heading', {
+                em: chunks => <em className="not-italic">{chunks}</em>,
+              })}
             </h2>
           </div>
 
           {hasEmail && (
             <a
               href={`mailto:${email}`}
-              aria-label={`Email ${email}`}
+              aria-label={t('emailLabel', { email: email ?? '' })}
               className={cn(
                 'inline-flex items-center gap-3 bg-[#f5f5f5] px-[22px] py-4 text-[#0a0909]',
                 'font-heading text-[15px] tracking-[-0.005em] whitespace-nowrap',
@@ -64,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({
               <Icon
                 name="arrow-up-right"
                 className="size-3.5"
-                title="Send email"
+                title={t('sendEmail')}
               />
             </a>
           )}
@@ -76,7 +80,7 @@ const Footer: React.FC<FooterProps> = ({
             {hasNavItems && (
               <div className="flex flex-col gap-4">
                 <span className="font-heading text-label uppercase tracking-[0.18em] text-[rgba(245,245,245,0.7)]">
-                  Sitemap
+                  {t('sitemap')}
                 </span>
                 <ul className="flex flex-col gap-2.5">
                   {navigationItems?.map(item => (
@@ -96,7 +100,7 @@ const Footer: React.FC<FooterProps> = ({
             {hasSocialLinks && (
               <div className="flex flex-col gap-4">
                 <span className="font-heading text-label uppercase tracking-[0.18em] text-[rgba(245,245,245,0.7)]">
-                  Elsewhere
+                  {t('elsewhere')}
                 </span>
                 <ul className="flex flex-col gap-2.5">
                   {socialLinks?.map((link, index) => {
@@ -142,12 +146,12 @@ const Footer: React.FC<FooterProps> = ({
             'md:grid-cols-[1fr_auto] md:gap-6'
           )}
         >
-          <span>© {year} · Federico Corradi · Milan, IT</span>
+          <span>{t('rail', { year: String(year) })}</span>
           <a
             href="#main-content"
             className="text-[#f5f5f5] transition hover:opacity-55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5] md:justify-self-end"
           >
-            Back to top ↑
+            {t('backToTop')}
           </a>
         </div>
       </div>

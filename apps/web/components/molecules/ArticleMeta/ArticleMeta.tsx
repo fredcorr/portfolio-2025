@@ -6,7 +6,12 @@ import { FadeIn } from '@/components/animation/FadeIn/FadeIn'
 
 export interface ArticleMetaProps extends Pick<
   ArticleIntroProps,
-  'author' | 'dateLabel' | 'readTimeLabel' | 'tags' | 'editionNumber'
+  | 'author'
+  | 'dateLabel'
+  | 'publishedYear'
+  | 'readTimeLabel'
+  | 'tags'
+  | 'editionNumber'
 > {
   className?: string
 }
@@ -14,6 +19,7 @@ export interface ArticleMetaProps extends Pick<
 const ArticleMeta: React.FC<ArticleMetaProps> = ({
   author,
   dateLabel,
+  publishedYear,
   readTimeLabel,
   tags,
   editionNumber,
@@ -30,7 +36,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
   // current time during prerender, which Cache Components rejects — and it
   // would bake the build year into an article that has no date, which is a
   // guess rather than a fact.
-  const year = dateLabel ? new Date(dateLabel).getFullYear() : undefined
+  const year = publishedYear
   const editionLabel =
     editionNumber != null
       ? [`N° ${padEdition(editionNumber)}`, year].filter(Boolean).join(' / ')

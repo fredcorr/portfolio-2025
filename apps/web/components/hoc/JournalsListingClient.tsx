@@ -11,7 +11,8 @@ import Pagination from '@/components/atoms/Pagination/Pagination'
 import SkeletonCard from '@/components/molecules/SkeletonCard/SkeletonCard'
 import { StaggerChildren } from '@/components/animation/StaggerChildren/StaggerChildren'
 import { FadeInStagger } from '@/components/animation/FadeIn/FadeInStagger'
-import { formatDate } from '@/utils/format-date'
+import type { DateTimeFormatOptions } from 'next-intl'
+import useFormatDate from '@/utils/use-format-date'
 import { JOURNALS_PAGE_SIZE } from '@/utils/journals-pagination'
 import { cn } from '@/utils/cn'
 import type {
@@ -19,7 +20,7 @@ import type {
   JournalsListingData,
 } from '@portfolio/types/components'
 
-const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+const DATE_FORMAT: DateTimeFormatOptions = {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
@@ -57,7 +58,8 @@ const buildKey = (
 
 const articleToCardProps = (
   article: JournalsListingArticle,
-  index: number
+  index: number,
+  formatDate: ReturnType<typeof useFormatDate>
 ) => ({
   href: article.slug?.current ? `/${article.slug.current}` : undefined,
   title: article.title,
@@ -68,9 +70,7 @@ const articleToCardProps = (
       ? `N° ${String(article.editionNumber).padStart(3, '0')}`
       : undefined,
   tag: article.tags?.[0],
-  footerDate:
-    formatDate({ value: article._createdAt, options: DATE_FORMAT }) ??
-    undefined,
+  footerDate: formatDate(article._createdAt, DATE_FORMAT),
   footerReadTime: article.readTime ?? undefined,
   priority: index < 3,
   className:
@@ -82,6 +82,7 @@ const JournalsListingClient = ({
   apiEndpoint,
   locale,
 }: JournalsListingClientProps) => {
+  const formatDate = useFormatDate()
   const [activeCategories, setActiveCategories] = useState<string[]>([])
   const [page, setPage] = useState(1)
 
@@ -201,7 +202,7 @@ const JournalsListingClient = ({
             {articles.map((article, i) => (
               <Card
                 key={article._id}
-                {...articleToCardProps(article, i)}
+                {...articleToCardProps(article, i, formatDate)}
                 AnimationComponent={FadeInStagger}
               />
             ))}

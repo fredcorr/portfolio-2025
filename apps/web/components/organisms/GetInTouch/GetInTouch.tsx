@@ -67,7 +67,6 @@ const GetInTouch = ({
         >
           <Form
             fields={formFields}
-            submitLabel="Submit"
             success={success}
             error={error}
             recaptcha={recaptchaConfig}
@@ -77,7 +76,6 @@ const GetInTouch = ({
       ) : (
         <Form
           fields={formFields}
-          submitLabel="Submit"
           success={success}
           error={error}
           recaptcha={recaptchaConfig}

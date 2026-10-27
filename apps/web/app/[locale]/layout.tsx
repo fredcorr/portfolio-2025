@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { SUPPORTED_LOCALES } from '@portfolio/types/base'
 import { isLocale } from '@portfolio/utils/locale'
 import '../globals.css'
@@ -19,14 +20,17 @@ import getSettings from '@/utils/get-settings'
 import getCopyrightYear from '@/utils/get-copyright-year'
 import { getSiteUrl } from '@/utils/get-site-url'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
-  title: {
-    template: '%s | Federico Corradi',
-    default: 'Federico Corradi',
-  },
-  description:
-    'Portfolio of Federico Corradi — frontend developer and designer.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('shell')
+
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: {
+      template: t('titleTemplate'),
+      default: t('defaultTitle'),
+    },
+    description: t('description'),
+  }
 }
 
 const play = Play({
@@ -65,6 +69,7 @@ export default async function RootLayout({
   const items = settings?.navigationItems ?? []
   const { isEnabled: isDraftMode } = await draftMode()
   const copyrightYear = await getCopyrightYear()
+  const t = await getTranslations('shell')
 
   return (
     <html lang={locale} data-scroll-behavior="smooth">
@@ -76,7 +81,7 @@ export default async function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-foreground"
         >
-          Skip to main content
+          {t('skipToContent')}
         </a>
         <NextIntlClientProvider>
           <SettingsProvider initialSettings={settings}>
