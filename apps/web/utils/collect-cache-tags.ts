@@ -262,13 +262,19 @@ export function collectSetDependencyTags(
   const seen = new Set<object>()
 
   // Every declared set was queried through `LANGUAGE_FILTER`, so it is the
-  // set of that type *in this locale*.
+  // set of that type *in this locale*. Articles also depend on the English set
+  // whatever the locale: edition numbers count English originals, so a
+  // translation's N° moves when the English set does.
   const declare = (
     source: Readonly<Partial<Record<string, readonly PageTypeName[]>>>,
     type: string
   ): void => {
     for (const dependency of source[type] ?? []) {
       tags.add(typeTag(dependency, locale))
+
+      if (dependency === PageTypeName.ArticlePage) {
+        tags.add(typeTag(dependency, DEFAULT_LOCALE))
+      }
     }
   }
 

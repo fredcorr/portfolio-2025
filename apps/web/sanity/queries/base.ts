@@ -1,5 +1,5 @@
 import { pageDocumentFields, basePageFields } from './pages'
-import { LANGUAGE_FILTER } from './fragments'
+import { LANGUAGE_FILTER, translationsFields } from './fragments'
 import { PageTypeName } from '@portfolio/types/base'
 import groq from 'groq'
 
@@ -23,8 +23,10 @@ export const ALL_PAGES_QUERY = groq`
 
 export const SITEMAP_PAGES_QUERY = groq`
 *[_type in [${PAGE_TYPE_FILTER}]]{
+  _id,
   slug,
   language,
+  ${translationsFields},
   "updateDate": coalesce(_updatedAt, _createdAt)
 }
 `

@@ -20,8 +20,12 @@ import {
  *     "_id": coalesce(_id, before()._id),
  *     "_type": coalesce(_type, before()._type),
  *     "slug": coalesce(slug.current, before().slug.current),
- *     "language": coalesce(language, before().language)
+ *     "language": coalesce(language, before().language),
+ *     "refs": coalesce(translations[].value._ref, before().translations[].value._ref)
  *   }
+ *
+ * The webhook's filter must include `translation.metadata` alongside the page
+ * types and settings: linking a translation edits only that document.
  *
  * A bare `_id` is not enough. The payload is the document *after* the change,
  * and after a delete there is no document — so `before()` is the only way to
@@ -36,6 +40,10 @@ import {
  * delete leaves English listings cached. Without it — a projection not yet
  * updated, or a document from before translations — every locale's set tags
  * fire: correct, just coarser. See `utils/build-revalidation-tags.ts`.
+ *
+ * `refs` exists only on `translation.metadata` deliveries: the ids of every
+ * version in the group, so the first link (which no cached page can know the
+ * metadata id of yet) and an unlink (via `before()`) still reach the pages.
  */
 
 /**

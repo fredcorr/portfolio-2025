@@ -11,11 +11,16 @@ export const SETTINGS_QUERY = groq`
       email,
       openForProjects,
       availabilityText,
+      // Each nav page resolved to its version in the requested locale: itself
+      // if it is already in that locale, else its published translation, else
+      // nothing — an untranslated page is left out of that locale's nav.
       "navigationItems": (navigationItems[]->{
-        _id,
-        title,
-        slug
-      })[
+        "item": select(
+          ${LANGUAGE_FILTER} => @,
+          *[_type == "translation.metadata" && references(^._id)][0]
+            .translations[language == $locale][0].value->
+        )
+      }.item)[
         defined(slug.current) &&
         ${PUBLISHED_FILTER}
       ]{

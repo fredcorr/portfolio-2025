@@ -115,3 +115,43 @@ test('draft ids are normalised', () => {
 test('a payload with neither id nor type yields nothing', () => {
   assert.equal(buildRevalidationTags({}, 'delete').size, 0)
 })
+
+test('translation metadata: refreshes every version, the sitemap and the nav', () => {
+  const tags = buildRevalidationTags(
+    {
+      _id: 'meta-1',
+      _type: 'translation.metadata',
+      refs: ['article-en-1', 'article-it-1'],
+    },
+    'update'
+  )
+
+  assert.deepEqual(sorted(tags), [
+    'sanity:id:article-en-1',
+    'sanity:id:article-it-1',
+    'sanity:id:meta-1',
+    'sanity:settings',
+    'sanity:sitemap',
+    'sanity:type:translation.metadata',
+  ])
+})
+
+test('translation metadata delete: before() refs still invalidate the pages', () => {
+  const tags = buildRevalidationTags(
+    { _id: 'meta-1', _type: 'translation.metadata', refs: ['homepage'] },
+    'delete'
+  )
+
+  assert.ok(tags.has('sanity:id:homepage'))
+  assert.ok(tags.has('sanity:sitemap'))
+})
+
+test('translation metadata without refs (old projection) still fires its own tags', () => {
+  const tags = buildRevalidationTags(
+    { _id: 'meta-1', _type: 'translation.metadata' },
+    'create'
+  )
+
+  assert.ok(tags.has('sanity:id:meta-1'))
+  assert.ok(tags.has('sanity:settings'))
+})
