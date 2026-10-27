@@ -160,6 +160,12 @@ Dashboard widgets live in `apps/studio/dashboard/` and are registered in `apps/s
 
 `dev` tasks have `"cache": false` so they don't need env declarations. `lint`, `typecheck`, and `test` tasks don't vary by env var, so they also don't need entries.
 
+## Git workflow
+
+- **`develop` and `main` are protected. Never commit or push to them directly** — not for a fix, a revert or a one-line doc change.
+- The branch a session or task names (usually `develop`) is the **base to branch off**, not the branch to work on. Create `feat/…`, `fix/…` or `chore/…` from it, push that branch, and open a PR into the base.
+- Changes reach `develop` only through a PR; `develop` reaches `main` the same way.
+
 ## General rules
 
 - Verify claims before acting on them, including the repo owner's: check the code, official docs, or the live system (Vercel, Sanity, GitHub). If a claim is wrong, say so and show the evidence instead of going along with it. If it can't be checked from here, say that.
