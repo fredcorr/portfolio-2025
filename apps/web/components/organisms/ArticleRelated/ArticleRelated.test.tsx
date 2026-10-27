@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import ArticleRelated from './ArticleRelated'
 import type { RelatedArticle } from '@portfolio/types/components'
 
@@ -24,13 +25,15 @@ const articles: RelatedArticle[] = [
 
 test('renders related article titles', () => {
   const markup = renderToStaticMarkup(
-    <ArticleRelated relatedArticles={articles} />
+    withIntl(<ArticleRelated relatedArticles={articles} />)
   )
   assert.match(markup, /On the discipline of restraint/)
   assert.match(markup, /Typography that does not beg for attention/)
 })
 
 test('returns null when no articles', () => {
-  const markup = renderToStaticMarkup(<ArticleRelated relatedArticles={[]} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ArticleRelated relatedArticles={[]} />)
+  )
   assert.equal(markup, '')
 })

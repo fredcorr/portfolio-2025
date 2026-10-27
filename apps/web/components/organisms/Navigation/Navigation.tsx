@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { NavigationItem } from '@portfolio/types/components'
 import { DEFAULT_LOCALE, type Locale } from '@portfolio/types/base'
 import { toCmsSlug } from '@portfolio/utils/locale'
@@ -35,6 +36,7 @@ const Navigation = ({
   languageSwitch,
   className,
 }: NavigationProps) => {
+  const t = useTranslations('nav')
   const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
   const [isHidden, setIsHidden] = React.useState(false)
@@ -115,9 +117,9 @@ const Navigation = ({
     }
   }, [handleScroll])
 
-  let buttonLabel = 'Open navigation menu'
+  let buttonLabel = t('openMenu')
   if (isOpen && buttonLabel.length >= 0) {
-    buttonLabel = 'Close navigation menu'
+    buttonLabel = t('closeMenu')
   }
 
   const homeHref = getPagePath({ slug: toCmsSlug(locale) })
@@ -158,7 +160,7 @@ const Navigation = ({
           >
             <Link
               href={homeHref}
-              aria-label="Go to homepage"
+              aria-label={t('home')}
               className={cn(
                 'inline-flex items-center text-black dark:text-white md:text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current',
                 !isOpen && 'text-current'
@@ -204,7 +206,7 @@ const Navigation = ({
                       !isOpen && 'opacity-100 rotate-0 scale-100',
                       isOpen && 'opacity-0 -rotate-90 scale-75'
                     )}
-                    title="Open menu"
+                    title={t('openMenuIcon')}
                   />
                   <Icon
                     name="x"
@@ -213,7 +215,7 @@ const Navigation = ({
                       isOpen && 'opacity-100 rotate-0 scale-100',
                       !isOpen && 'opacity-0 rotate-90 scale-75'
                     )}
-                    title="Close menu"
+                    title={t('closeMenuIcon')}
                   />
                 </span>
               </button>
@@ -240,7 +242,7 @@ const Navigation = ({
                 onClick={handleNavigate}
                 className="sr-only"
               >
-                Close navigation menu
+                {t('closeMenu')}
               </button>
               <ul className="flex w-full flex-col items-center gap-4 text-center text-black dark:text-foreground">
                 {items.map((item, index) => (

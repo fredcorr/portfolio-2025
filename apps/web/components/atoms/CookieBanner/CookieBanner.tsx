@@ -1,10 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import * as CookieConsent from 'vanilla-cookieconsent'
 import { updateAnalyticsConsent } from '@/utils/consent-mode'
 
 export default function CookieBanner() {
+  const t = useTranslations('cookies')
+  const locale = useLocale()
+
   useEffect(() => {
     CookieConsent.run({
       categories: {
@@ -19,35 +23,35 @@ export default function CookieBanner() {
           },
         },
       },
+      // One translation, for the page's own language. Switching language is
+      // a full page load (it changes the root layout), so the banner always
+      // starts again in the right one.
       language: {
-        default: 'en',
+        default: locale,
         translations: {
-          en: {
+          [locale]: {
             consentModal: {
-              title: 'We use cookies',
-              description:
-                'This site uses cookies to understand how you use it. You can choose which categories to allow.',
-              acceptAllBtn: 'Accept all',
-              acceptNecessaryBtn: 'Reject all',
-              showPreferencesBtn: 'Manage preferences',
+              title: t('title'),
+              description: t('description'),
+              acceptAllBtn: t('acceptAll'),
+              acceptNecessaryBtn: t('rejectAll'),
+              showPreferencesBtn: t('managePreferences'),
             },
             preferencesModal: {
-              title: 'Cookie preferences',
-              acceptAllBtn: 'Accept all',
-              acceptNecessaryBtn: 'Reject all',
-              savePreferencesBtn: 'Save preferences',
-              closeIconLabel: 'Close',
+              title: t('preferencesTitle'),
+              acceptAllBtn: t('acceptAll'),
+              acceptNecessaryBtn: t('rejectAll'),
+              savePreferencesBtn: t('savePreferences'),
+              closeIconLabel: t('close'),
               sections: [
                 {
-                  title: 'Essential cookies',
-                  description:
-                    'Required for the site to function. These cannot be disabled.',
+                  title: t('essentialTitle'),
+                  description: t('essentialDescription'),
                   linkedCategory: 'necessary',
                 },
                 {
-                  title: 'Analytics cookies',
-                  description:
-                    'Help us understand how visitors interact with the site so we can improve it. No personal data is collected.',
+                  title: t('analyticsTitle'),
+                  description: t('analyticsDescription'),
                   linkedCategory: 'analytics',
                 },
               ],
@@ -76,7 +80,7 @@ export default function CookieBanner() {
         updateAnalyticsConsent(CookieConsent.acceptedCategory('analytics'))
       },
     })
-  }, [])
+  }, [locale, t])
 
   return null
 }

@@ -2,12 +2,13 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import { statsMock } from '@/mocks/organisms/stats'
 import Stats from './Stats'
 
 test('renders stats items when provided', () => {
-  const markup = renderToStaticMarkup(<Stats {...statsMock} />)
+  const markup = renderToStaticMarkup(withIntl(<Stats {...statsMock} />))
 
   assert.match(markup, /data-organism=\"stats\"/)
   assert.match(markup, /15\+/)
@@ -17,7 +18,9 @@ test('renders stats items when provided', () => {
 })
 
 test('returns null when items are missing', () => {
-  const markup = renderToStaticMarkup(<Stats _type={statsMock._type} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<Stats _type={statsMock._type} />)
+  )
 
   assert.equal(markup, '')
 })

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import FocusTrap from 'focus-trap-react'
 import { RemoveScroll } from 'react-remove-scroll'
 import { cn } from '@/utils/cn'
@@ -22,9 +23,11 @@ export const Modal = ({
   title,
   description,
   onClose,
-  actionLabel = 'Close',
+  actionLabel,
   variant = 'success',
 }: ModalProps) => {
+  const t = useTranslations('form')
+
   if (!isOpen) return null
 
   const accentClass =
@@ -78,7 +81,7 @@ export const Modal = ({
                   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black'
                 )}
               >
-                {actionLabel}
+                {actionLabel ?? t('close')}
               </button>
             </div>
           </div>

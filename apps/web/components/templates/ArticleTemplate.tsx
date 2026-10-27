@@ -4,7 +4,7 @@ import ArticleFeaturedImage from '@/components/organisms/ArticleFeaturedImage/Ar
 import ArticleContent from '@/components/organisms/ArticleContent/ArticleContent'
 import ArticleRelated from '@/components/organisms/ArticleRelated/ArticleRelated'
 import { RenderOrganism } from '@/components/hoc/RenderOrganism'
-import { formatDate } from '@/utils/format-date'
+import useFormatDate from '@/utils/use-format-date'
 import { getReadTimeLabel } from '@/utils/calculate-read-time'
 import { buildPageUrl } from '@/utils/slug'
 import { getSiteUrl } from '@/utils/get-site-url'
@@ -12,9 +12,14 @@ import { getSiteUrl } from '@/utils/get-site-url'
 export const ArticleTemplate = (props: ArticlePageDocument) => {
   const slug = props.slug?.current
   const title = props.seoTitle || props.title
-  const dateLabel = formatDate({
-    value: props._updatedAt || props._createdAt,
-  })
+  const formatDate = useFormatDate()
+  const dateValue = props._updatedAt || props._createdAt
+  const dateLabel = formatDate(dateValue)
+  const publishedDate = dateValue ? new Date(dateValue) : undefined
+  const publishedYear =
+    publishedDate && !Number.isNaN(publishedDate.getTime())
+      ? publishedDate.getFullYear()
+      : undefined
   const readTimeLabel = getReadTimeLabel(props.articleContent)
   const heroImage = props.heroImage || props.seoImage
   const shareUrl = slug ? buildPageUrl(getSiteUrl(), slug) : undefined
@@ -26,6 +31,7 @@ export const ArticleTemplate = (props: ArticlePageDocument) => {
         slug={slug}
         title={title}
         dateLabel={dateLabel}
+        publishedYear={publishedYear}
         readTimeLabel={readTimeLabel}
         tags={props.tags}
         deck={deck}
@@ -40,6 +46,7 @@ export const ArticleTemplate = (props: ArticlePageDocument) => {
         tags={props.tags}
         author={props.author}
         dateLabel={dateLabel}
+        publishedYear={publishedYear}
         readTimeLabel={readTimeLabel}
         editionNumber={props.editionNumber}
       />

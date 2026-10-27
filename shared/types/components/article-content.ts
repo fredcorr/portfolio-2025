@@ -8,6 +8,8 @@ export interface ArticleContentProps {
   tags?: string[]
   author?: AuthorData
   dateLabel?: string
+  /** From the raw CMS date; `dateLabel` is localised and can't be re-parsed. */
+  publishedYear?: number
   readTimeLabel?: string
   editionNumber?: number
   showReaderCount?: boolean

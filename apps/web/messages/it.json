@@ -1,0 +1,73 @@
+{
+  "shell": {
+    "titleTemplate": "%s | Federico Corradi",
+    "defaultTitle": "Federico Corradi",
+    "description": "Portfolio di Federico Corradi — frontend developer e designer.",
+    "skipToContent": "Vai al contenuto principale"
+  },
+  "nav": {
+    "openMenu": "Apri il menu di navigazione",
+    "closeMenu": "Chiudi il menu di navigazione",
+    "openMenuIcon": "Apri menu",
+    "closeMenuIcon": "Chiudi menu",
+    "home": "Vai alla homepage"
+  },
+  "languagePicker": {
+    "triggerPrefix": "Lingua: ",
+    "toolbarLabel": "Scegli la lingua",
+    "readIn": "Leggi in",
+    "close": "Chiudi selettore lingua",
+    "current": "{name} (attuale)",
+    "homepageFallback": "{name} — pagina non tradotta, apre la homepage"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Pagina non trovata",
+    "body": "Non abbiamo trovato la pagina che cercavi. Controlla l'indirizzo o torna alla homepage."
+  },
+  "theme": {
+    "activateLight": "Attiva il tema chiaro",
+    "activateDark": "Attiva il tema scuro"
+  },
+  "footer": {
+    "available": "Disponibile per nuovi progetti",
+    "availableUntil": "Disponibile per nuovi progetti · {availability}",
+    "heading": "<em>Parliamone.</em>",
+    "emailLabel": "Scrivi a {email}",
+    "sendEmail": "Invia email",
+    "sitemap": "Mappa del sito",
+    "elsewhere": "Altrove",
+    "rail": "© {year} · Federico Corradi · Milano, IT",
+    "backToTop": "Torna su ↑"
+  },
+  "cookies": {
+    "title": "Usiamo i cookie",
+    "description": "Questo sito usa i cookie per capire come lo utilizzi. Puoi scegliere quali categorie consentire.",
+    "acceptAll": "Accetta tutti",
+    "rejectAll": "Rifiuta tutti",
+    "managePreferences": "Gestisci preferenze",
+    "preferencesTitle": "Preferenze cookie",
+    "savePreferences": "Salva preferenze",
+    "close": "Chiudi",
+    "essentialTitle": "Cookie essenziali",
+    "essentialDescription": "Necessari al funzionamento del sito. Non possono essere disattivati.",
+    "analyticsTitle": "Cookie analitici",
+    "analyticsDescription": "Ci aiutano a capire come i visitatori usano il sito, così da migliorarlo. Non raccogliamo dati personali."
+  },
+  "error": {
+    "title": "Qualcosa è andato storto!",
+    "retry": "Riprova"
+  },
+  "form": {
+    "submit": "Invia",
+    "submitting": "Invio in corso...",
+    "successTitle": "Messaggio inviato!",
+    "errorTitle": "Qualcosa è andato storto",
+    "close": "Chiudi",
+    "required": "Campo obbligatorio",
+    "invalidEmail": "Inserisci un indirizzo email valido",
+    "invalidFormat": "Formato non valido",
+    "invalidDate": "Usa il formato AAAA-MM-GG",
+    "selectOption": "Seleziona un'opzione"
+  }
+}

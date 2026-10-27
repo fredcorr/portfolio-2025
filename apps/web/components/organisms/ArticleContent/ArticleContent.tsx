@@ -24,6 +24,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
   tags,
   author,
   dateLabel,
+  publishedYear,
   readTimeLabel,
   editionNumber,
   showReaderCount = false,
@@ -142,6 +143,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
       <ArticleMeta
         author={author}
         dateLabel={dateLabel}
+        publishedYear={publishedYear}
         readTimeLabel={readTimeLabel}
         tags={tags}
         editionNumber={editionNumber}

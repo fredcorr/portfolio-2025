@@ -19,10 +19,25 @@ export const buildInitialValues = (
   }, {})
 }
 
+/**
+ * Fallback validation messages, in the page's language. A field's own
+ * `errorMessage` from the CMS still wins when it is set.
+ */
+export interface ValidationMessages {
+  required: string
+  invalidEmail: string
+  invalidFormat: string
+  invalidDate: string
+  selectOption: string
+}
+
 const getErrorMessage = (field: FormFieldItem, fallback: string) =>
   field.errorMessage?.trim() || fallback
 
-export const buildValidationSchema = (fields?: FormFieldItem[]) => {
+export const buildValidationSchema = (
+  fields: FormFieldItem[] | undefined,
+  messages: ValidationMessages
+) => {
   if (!fields || fields.length === 0) return yup.object().shape({})
 
   const shape = fields.reduce<Record<string, yup.AnySchema>>((acc, field) => {
@@ -34,7 +49,7 @@ export const buildValidationSchema = (fields?: FormFieldItem[]) => {
       if (field.required) {
         checkboxSchema = checkboxSchema.oneOf(
           [true],
-          getErrorMessage(field, 'This field is required')
+          getErrorMessage(field, messages.required)
         )
       }
 
@@ -45,9 +60,7 @@ export const buildValidationSchema = (fields?: FormFieldItem[]) => {
     let validator: yup.StringSchema<string | undefined> = yup.string().trim()
 
     if (field.validation?.type === FormValidationType.Email) {
-      validator = validator.email(
-        getErrorMessage(field, 'Please enter a valid email')
-      )
+      validator = validator.email(getErrorMessage(field, messages.invalidEmail))
     }
 
     if (field.validation?.type === FormValidationType.Regex) {
@@ -55,7 +68,7 @@ export const buildValidationSchema = (fields?: FormFieldItem[]) => {
       if (pattern) {
         validator = validator.matches(
           new RegExp(pattern),
-          getErrorMessage(field, 'Invalid format')
+          getErrorMessage(field, messages.invalidFormat)
         )
       }
     }
@@ -63,20 +76,18 @@ export const buildValidationSchema = (fields?: FormFieldItem[]) => {
     if (field.validation?.type === FormValidationType.Date) {
       validator = validator.matches(
         /^\d{4}-\d{2}-\d{2}$/,
-        getErrorMessage(field, 'Use YYYY-MM-DD format')
+        getErrorMessage(field, messages.invalidDate)
       )
     }
 
     if (field.type === FormFieldType.Select && field.required) {
       validator = validator.required(
-        getErrorMessage(field, 'Please select an option')
+        getErrorMessage(field, messages.selectOption)
       )
     }
 
     if (field.required) {
-      validator = validator.required(
-        getErrorMessage(field, 'This field is required')
-      )
+      validator = validator.required(getErrorMessage(field, messages.required))
     }
 
     acc[key] = validator

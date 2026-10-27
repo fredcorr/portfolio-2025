@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import Form from './Form'
 import {
@@ -48,12 +49,14 @@ const richTextBlock = (text: string): PortableTextBlock[] => [
 
 test('renders provided fields and submit label', () => {
   const markup = renderToStaticMarkup(
-    <Form
-      fields={fields}
-      submitLabel="Send message"
-      success={{ title: 'Success', subtitle: richTextBlock('Thanks!') }}
-      error={{ title: 'Error', subtitle: richTextBlock('Try again') }}
-    />
+    withIntl(
+      <Form
+        fields={fields}
+        submitLabel="Send message"
+        success={{ title: 'Success', subtitle: richTextBlock('Thanks!') }}
+        error={{ title: 'Error', subtitle: richTextBlock('Try again') }}
+      />
+    )
   )
 
   assert.match(markup, /Name/)
@@ -64,11 +67,13 @@ test('renders provided fields and submit label', () => {
 
 test('does not render modal content while idle', () => {
   const markup = renderToStaticMarkup(
-    <Form
-      fields={fields}
-      success={{ title: 'Success', subtitle: richTextBlock('Done') }}
-      error={{ title: 'Error', subtitle: richTextBlock('Oops') }}
-    />
+    withIntl(
+      <Form
+        fields={fields}
+        success={{ title: 'Success', subtitle: richTextBlock('Done') }}
+        error={{ title: 'Error', subtitle: richTextBlock('Oops') }}
+      />
+    )
   )
 
   assert.ok(!markup.includes('Success'))

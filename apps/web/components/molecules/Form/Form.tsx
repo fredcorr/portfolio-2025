@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type {
   FormComponent,
@@ -28,14 +29,21 @@ type FormValues = Record<string, unknown>
 
 export const Form = ({
   fields,
-  submitLabel = 'Submit',
+  submitLabel,
   success,
   error,
   className,
   recaptcha,
 }: FormProps) => {
+  const t = useTranslations('form')
   const { executeRecaptcha } = useGoogleReCaptcha()
-  const resolverSchema = buildValidationSchema(fields)
+  const resolverSchema = buildValidationSchema(fields, {
+    required: t('required'),
+    invalidEmail: t('invalidEmail'),
+    invalidFormat: t('invalidFormat'),
+    invalidDate: t('invalidDate'),
+    selectOption: t('selectOption'),
+  })
 
   const {
     register,
@@ -85,10 +93,10 @@ export const Form = ({
     }
   }
 
-  const successTitle = success?.title || 'Message sent!'
+  const successTitle = success?.title || t('successTitle')
   const successDescription = success?.subtitle
 
-  const errorTitle = error?.title || 'Something went wrong'
+  const errorTitle = error?.title || t('errorTitle')
   const errorDescription = error?.subtitle
 
   const isModalOpen = status !== 'idle'
@@ -117,7 +125,7 @@ export const Form = ({
           disabled={isSubmitting}
           className="mt-2 inline-flex w-full items-center justify-center bg-black px-6 py-3 font-heading text-body-lg font-semibold text-white transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-70 dark:bg-foreground dark:text-background dark:focus-visible:outline-foreground"
         >
-          {isSubmitting ? 'Submitting...' : submitLabel}
+          {isSubmitting ? t('submitting') : (submitLabel ?? t('submit'))}
         </button>
       </form>
 

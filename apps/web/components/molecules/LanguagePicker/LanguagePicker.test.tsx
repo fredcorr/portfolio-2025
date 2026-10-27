@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import { Locale } from '@portfolio/types/base'
 
 import LanguagePicker from './LanguagePicker'
@@ -23,7 +24,9 @@ const translatedOptions = [
 
 test('renders one link per language with hreflang and lang', () => {
   const markup = renderToStaticMarkup(
-    <LanguagePicker locale={Locale.English} options={translatedOptions} />
+    withIntl(
+      <LanguagePicker locale={Locale.English} options={translatedOptions} />
+    )
   )
 
   assert.match(markup, /hrefLang="en" lang="en"[^>]*href="\/journals\/foo"/)
@@ -34,7 +37,9 @@ test('renders one link per language with hreflang and lang', () => {
 
 test('marks the current language and shows its code on a closed trigger', () => {
   const markup = renderToStaticMarkup(
-    <LanguagePicker locale={Locale.English} options={translatedOptions} />
+    withIntl(
+      <LanguagePicker locale={Locale.English} options={translatedOptions} />
+    )
   )
 
   assert.match(
@@ -51,18 +56,20 @@ test('marks the current language and shows its code on a closed trigger', () => 
 
 test('an untranslated language links to its homepage and says so', () => {
   const markup = renderToStaticMarkup(
-    <LanguagePicker
-      locale={Locale.English}
-      options={[
-        translatedOptions[0],
-        {
-          locale: Locale.Italian,
-          href: '/it',
-          isCurrent: false,
-          isAvailable: false,
-        },
-      ]}
-    />
+    withIntl(
+      <LanguagePicker
+        locale={Locale.English}
+        options={[
+          translatedOptions[0],
+          {
+            locale: Locale.Italian,
+            href: '/it',
+            isCurrent: false,
+            isAvailable: false,
+          },
+        ]}
+      />
+    )
   )
 
   assert.match(
@@ -73,13 +80,16 @@ test('an untranslated language links to its homepage and says so', () => {
 
 test('uses Italian chrome on Italian pages', () => {
   const markup = renderToStaticMarkup(
-    <LanguagePicker
-      locale={Locale.Italian}
-      options={translatedOptions.map(option => ({
-        ...option,
-        isCurrent: option.locale === Locale.Italian,
-      }))}
-    />
+    withIntl(
+      <LanguagePicker
+        locale={Locale.Italian}
+        options={translatedOptions.map(option => ({
+          ...option,
+          isCurrent: option.locale === Locale.Italian,
+        }))}
+      />,
+      Locale.Italian
+    )
   )
 
   assert.match(markup, /Leggi in/)

@@ -1,0 +1,73 @@
+{
+  "shell": {
+    "titleTemplate": "%s | Federico Corradi",
+    "defaultTitle": "Federico Corradi",
+    "description": "Portfolio of Federico Corradi — frontend developer and designer.",
+    "skipToContent": "Skip to main content"
+  },
+  "nav": {
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "openMenuIcon": "Open menu",
+    "closeMenuIcon": "Close menu",
+    "home": "Go to homepage"
+  },
+  "languagePicker": {
+    "triggerPrefix": "Language: ",
+    "toolbarLabel": "Choose language",
+    "readIn": "Read in",
+    "close": "Close language picker",
+    "current": "{name} (current)",
+    "homepageFallback": "{name} — this page isn't translated, opens the homepage"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "body": "We couldn't find the page you were looking for. Check the URL or head back to the homepage."
+  },
+  "theme": {
+    "activateLight": "Activate light theme",
+    "activateDark": "Activate dark theme"
+  },
+  "footer": {
+    "available": "Open for projects",
+    "availableUntil": "Open for projects · {availability}",
+    "heading": "Let’s <em>talk.</em>",
+    "emailLabel": "Email {email}",
+    "sendEmail": "Send email",
+    "sitemap": "Sitemap",
+    "elsewhere": "Elsewhere",
+    "rail": "© {year} · Federico Corradi · Milan, IT",
+    "backToTop": "Back to top ↑"
+  },
+  "cookies": {
+    "title": "We use cookies",
+    "description": "This site uses cookies to understand how you use it. You can choose which categories to allow.",
+    "acceptAll": "Accept all",
+    "rejectAll": "Reject all",
+    "managePreferences": "Manage preferences",
+    "preferencesTitle": "Cookie preferences",
+    "savePreferences": "Save preferences",
+    "close": "Close",
+    "essentialTitle": "Essential cookies",
+    "essentialDescription": "Required for the site to function. These cannot be disabled.",
+    "analyticsTitle": "Analytics cookies",
+    "analyticsDescription": "Help us understand how visitors interact with the site so we can improve it. No personal data is collected."
+  },
+  "error": {
+    "title": "Something went wrong!",
+    "retry": "Try again"
+  },
+  "form": {
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "successTitle": "Message sent!",
+    "errorTitle": "Something went wrong",
+    "close": "Close",
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "invalidFormat": "Invalid format",
+    "invalidDate": "Use YYYY-MM-DD format",
+    "selectOption": "Please select an option"
+  }
+}

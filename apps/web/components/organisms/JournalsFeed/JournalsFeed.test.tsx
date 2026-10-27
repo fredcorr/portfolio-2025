@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 import React from 'react'
 import { ComponentTypeName, PageTypeName } from '@portfolio/types/base'
 import type { JournalsFeedComponent } from '@portfolio/types/components'
@@ -59,7 +60,7 @@ const createJournalsFeed = (
 
 test('renders kicker, heading, and article titles', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /Journal/)
@@ -70,7 +71,7 @@ test('renders kicker, heading, and article titles', () => {
 
 test('renders article number badges', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /N° 001/)
@@ -79,7 +80,7 @@ test('renders article number badges', () => {
 
 test('renders article tags', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /Craft · Essay/)
@@ -88,7 +89,7 @@ test('renders article tags', () => {
 
 test('renders article href from slug', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /href="\/journal\/restraint"/)
@@ -96,7 +97,7 @@ test('renders article href from slug', () => {
 
 test('shows read time when articleContent is provided', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /min read/)
@@ -104,7 +105,7 @@ test('shows read time when articleContent is provided', () => {
 
 test('shows CTA when ctaLink has a href', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed()} />
+    withIntl(<JournalsFeed {...createJournalsFeed()} />)
   )
 
   assert.match(markup, /Read all articles/)
@@ -113,9 +114,11 @@ test('shows CTA when ctaLink has a href', () => {
 
 test('hides CTA when ctaLink is absent', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed
-      {...createJournalsFeed({ ctaLink: undefined, ctaLabel: 'Read all' })}
-    />
+    withIntl(
+      <JournalsFeed
+        {...createJournalsFeed({ ctaLink: undefined, ctaLabel: 'Read all' })}
+      />
+    )
   )
 
   assert.doesNotMatch(markup, /href="\/journal"/)
@@ -123,12 +126,14 @@ test('hides CTA when ctaLink is absent', () => {
 
 test('hides CTA when ctaLink has no resolvable href', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed
-      {...createJournalsFeed({
-        ctaLink: { name: 'Broken' },
-        ctaLabel: 'Read all',
-      })}
-    />
+    withIntl(
+      <JournalsFeed
+        {...createJournalsFeed({
+          ctaLink: { name: 'Broken' },
+          ctaLabel: 'Read all',
+        })}
+      />
+    )
   )
 
   assert.doesNotMatch(markup, /Read all/)
@@ -136,7 +141,7 @@ test('hides CTA when ctaLink has no resolvable href', () => {
 
 test('renders empty state when articles array is empty', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed({ articles: [] })} />
+    withIntl(<JournalsFeed {...createJournalsFeed({ articles: [] })} />)
   )
 
   assert.match(markup, /Articles will appear here once they are published/)
@@ -144,7 +149,7 @@ test('renders empty state when articles array is empty', () => {
 
 test('renders empty state when articles is undefined', () => {
   const markup = renderToStaticMarkup(
-    <JournalsFeed {...createJournalsFeed({ articles: undefined })} />
+    withIntl(<JournalsFeed {...createJournalsFeed({ articles: undefined })} />)
   )
 
   assert.match(markup, /Articles will appear here once they are published/)

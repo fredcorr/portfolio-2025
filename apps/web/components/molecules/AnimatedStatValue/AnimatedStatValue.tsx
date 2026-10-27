@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useLocale } from 'next-intl'
 
 import { cn } from '@/utils/cn'
 
@@ -49,12 +50,16 @@ const formatAnimatedNumber = ({
   value,
   fractionDigits,
   useGrouping,
+  locale,
 }: {
   value: number
   fractionDigits: number
   useGrouping: boolean
+  // The page's locale, not the runtime's: Node and the browser would
+  // otherwise disagree, and Italian pages need "1.200", not "1,200".
+  locale: string
 }) => {
-  const formatter = new Intl.NumberFormat(undefined, {
+  const formatter = new Intl.NumberFormat(locale, {
     useGrouping,
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
@@ -76,6 +81,7 @@ const AnimatedStatValue = ({
   className,
   durationMs = 1200,
 }: AnimatedStatValueProps) => {
+  const locale = useLocale()
   const parsed = React.useMemo(() => parseStatValue(value), [value])
   const [displayValue, setDisplayValue] = React.useState(value)
   const containerRef = React.useRef<HTMLSpanElement | null>(null)
@@ -109,6 +115,7 @@ const AnimatedStatValue = ({
           value: current,
           fractionDigits: parsed.fractionDigits,
           useGrouping: parsed.useGrouping,
+          locale,
         })
 
         setDisplayValue(`${parsed.prefix}${formatted}${parsed.suffix}`)
@@ -120,6 +127,7 @@ const AnimatedStatValue = ({
             value: parsed.target,
             fractionDigits: parsed.fractionDigits,
             useGrouping: parsed.useGrouping,
+            locale,
           })
           setDisplayValue(`${parsed.prefix}${finalFormatted}${parsed.suffix}`)
         }
@@ -130,6 +138,7 @@ const AnimatedStatValue = ({
           value: 0,
           fractionDigits: parsed.fractionDigits,
           useGrouping: parsed.useGrouping,
+          locale,
         })}${parsed.suffix}`
       )
 
@@ -163,7 +172,7 @@ const AnimatedStatValue = ({
       }
       observer.disconnect()
     }
-  }, [durationMs, parsed])
+  }, [durationMs, locale, parsed])
 
   return (
     <span ref={containerRef} className={cn('inline-grid', className)}>

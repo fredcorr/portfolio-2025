@@ -4,6 +4,8 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
+import { NextIntlClientProvider } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { SUPPORTED_LOCALES } from '@portfolio/types/base'
 import { isLocale } from '@portfolio/utils/locale'
 import '../globals.css'
@@ -18,14 +20,17 @@ import getSettings from '@/utils/get-settings'
 import getCopyrightYear from '@/utils/get-copyright-year'
 import { getSiteUrl } from '@/utils/get-site-url'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getSiteUrl()),
-  title: {
-    template: '%s | Federico Corradi',
-    default: 'Federico Corradi',
-  },
-  description:
-    'Portfolio of Federico Corradi — frontend developer and designer.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('shell')
+
+  return {
+    metadataBase: new URL(getSiteUrl()),
+    title: {
+      template: t('titleTemplate'),
+      default: t('defaultTitle'),
+    },
+    description: t('description'),
+  }
 }
 
 const play = Play({
@@ -64,6 +69,7 @@ export default async function RootLayout({
   const items = settings?.navigationItems ?? []
   const { isEnabled: isDraftMode } = await draftMode()
   const copyrightYear = await getCopyrightYear()
+  const t = await getTranslations('shell')
 
   return (
     <html lang={locale} data-scroll-behavior="smooth">
@@ -75,35 +81,37 @@ export default async function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:ring-2 focus:ring-foreground"
         >
-          Skip to main content
+          {t('skipToContent')}
         </a>
-        <SettingsProvider initialSettings={settings}>
-          <Navigation
-            items={items}
-            projectCount={projectCount}
-            locale={locale}
-            languageSwitch={languages}
-          />
-          <main
-            id="main-content"
-            className="mx-auto min-h-screen w-full bg-background pt-20 md:pt-24 xl:mx-auto xl:max-w-8xl"
-          >
-            {children}
-          </main>
-          <Footer
-            email={settings?.email}
-            socialLinks={settings?.socialLinks}
-            navigationItems={settings?.navigationItems}
-            openForProjects={settings?.openForProjects}
-            availabilityText={settings?.availabilityText}
-            year={copyrightYear}
-          />
-          <ThemeToggle />
-          <GtmProvider />
-          <CookieBanner />
-          <Analytics />
-          <SpeedInsights />
-        </SettingsProvider>
+        <NextIntlClientProvider>
+          <SettingsProvider initialSettings={settings}>
+            <Navigation
+              items={items}
+              projectCount={projectCount}
+              locale={locale}
+              languageSwitch={languages}
+            />
+            <main
+              id="main-content"
+              className="mx-auto min-h-screen w-full bg-background pt-20 md:pt-24 xl:mx-auto xl:max-w-8xl"
+            >
+              {children}
+            </main>
+            <Footer
+              email={settings?.email}
+              socialLinks={settings?.socialLinks}
+              navigationItems={settings?.navigationItems}
+              openForProjects={settings?.openForProjects}
+              availabilityText={settings?.availabilityText}
+              year={copyrightYear}
+            />
+            <ThemeToggle />
+            <GtmProvider />
+            <CookieBanner />
+            <Analytics />
+            <SpeedInsights />
+          </SettingsProvider>
+        </NextIntlClientProvider>
         {isDraftMode && <VisualEditingEnabled />}
       </body>
     </html>
