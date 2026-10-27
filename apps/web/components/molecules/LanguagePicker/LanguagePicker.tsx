@@ -144,7 +144,7 @@ const LanguagePicker = ({
         !panelContainer && 'absolute inset-x-0 top-full'
       )}
     >
-      <div className="flex min-h-14 items-center gap-3 pl-4 pr-2 md:gap-8 md:pl-8 md:pr-5">
+      <div className="flex min-h-14 items-center gap-3 px-4 md:gap-8 md:px-6 lg:px-11">
         <span
           aria-hidden="true"
           className="font-heading text-label uppercase tracking-[0.12em] text-gray-200"
@@ -152,16 +152,8 @@ const LanguagePicker = ({
           {strings.readIn}
         </span>
         <ul className="flex flex-1 gap-1">
-          {options.map((option, index) => (
-            <li
-              key={option.locale}
-              // Staggered in like the nav items; leaving, they go together.
-              style={{ transitionDelay: isOpen ? `${index * 60}ms` : '0ms' }}
-              className={cn(
-                'transition-[opacity,translate] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
-                isOpen ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'
-              )}
-            >
+          {options.map(option => (
+            <li key={option.locale}>
               <Link
                 href={option.href}
                 hrefLang={option.locale}
