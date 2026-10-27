@@ -1,5 +1,10 @@
 import groq from 'groq'
-import { basePageFields, imageFields, LANGUAGE_FILTER } from '../fragments'
+import {
+  basePageFields,
+  editionNumberExpression,
+  imageFields,
+  LANGUAGE_FILTER,
+} from '../fragments'
 import { pageComponentFields } from '../components'
 
 export const articlePageFields = groq`
@@ -17,7 +22,7 @@ export const articlePageFields = groq`
     _key,
     ${pageComponentFields}
   },
-  "editionNumber": count(*[_type == "article" && ${LANGUAGE_FILTER} && _createdAt <= ^._createdAt]),
+  "editionNumber": ${editionNumberExpression},
   "relatedArticles": *[
     _type == "article" && _id != ^._id && ${LANGUAGE_FILTER}
     && count(tags[@ in ^.tags]) > 0
@@ -29,6 +34,6 @@ export const articlePageFields = groq`
     heroImage {
       ${imageFields}
     },
-    "editionNumber": count(*[_type == "article" && ${LANGUAGE_FILTER} && _createdAt <= ^._createdAt])
+    "editionNumber": ${editionNumberExpression}
   }
 `

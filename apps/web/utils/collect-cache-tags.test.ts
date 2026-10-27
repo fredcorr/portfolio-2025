@@ -221,7 +221,7 @@ test('count tags are namespaced apart from type tags', () => {
   assert.notEqual(countTag('project'), 'sanity:type:project')
 })
 
-test('locale-scoped tags: an Italian page depends on Italian sets only', () => {
+test('locale-scoped tags: an Italian listing depends on Italian sets, plus English articles for edition numbers', () => {
   const page = {
     _id: 'page-it-journals',
     _type: 'page',
@@ -237,14 +237,19 @@ test('locale-scoped tags: an Italian page depends on Italian sets only', () => {
     ],
   }
 
-  const tags = [
-    ...collectCacheTags(page, IT),
-    ...collectSetDependencyTags(page, IT),
-  ]
+  const derived = collectCacheTags(page, IT)
+  const declared = collectSetDependencyTags(page, IT)
 
-  assert.ok(tags.includes('sanity:type:article:it'))
-  assert.ok(!tags.includes('sanity:type:article:en'))
-  assert.ok(!tags.includes('sanity:type:article'))
+  // Documents in the result belong to the query's locale only.
+  assert.ok(derived.includes('sanity:type:article:it'))
+  assert.ok(!derived.includes('sanity:type:article:en'))
+  // The listing's set is Italian, but edition numbers count English
+  // originals, so the English article set is declared too.
+  assert.deepEqual(declared.sort(), [
+    'sanity:type:article:en',
+    'sanity:type:article:it',
+  ])
+  assert.ok(![...derived, ...declared].includes('sanity:type:article'))
 })
 
 test('without a query locale, each document is tagged by its own language', () => {
@@ -276,4 +281,29 @@ test('type and count tags take an optional locale', () => {
   assert.equal(typeTag('article', IT), 'sanity:type:article:it')
   assert.equal(typeTag('settings'), 'sanity:type:settings')
   assert.equal(countTag('project', EN), 'sanity:count:project:en')
+})
+
+test('Italian article sets also depend on the English set (edition numbers)', () => {
+  const tags = collectSetDependencyTags(
+    { _id: 'article-it-1', _type: 'article' },
+    IT
+  )
+
+  assert.deepEqual(tags.sort(), [
+    'sanity:type:article:en',
+    'sanity:type:article:it',
+  ])
+})
+
+test('project sets stay single-locale', () => {
+  const tags = collectSetDependencyTags(
+    {
+      _id: 'page-it',
+      _type: 'page',
+      pageComponents: [{ _type: 'workIndex', _key: 'a', projects: [] }],
+    },
+    IT
+  )
+
+  assert.deepEqual(tags, ['sanity:type:project:it'])
 })

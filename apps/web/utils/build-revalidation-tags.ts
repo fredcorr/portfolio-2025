@@ -1,4 +1,9 @@
-import { GlobalItemsType, Locale, PageTypeName } from '@portfolio/types/base'
+import {
+  GlobalItemsType,
+  Locale,
+  PageTypeName,
+  PluginDocumentType,
+} from '@portfolio/types/base'
 import { isLocale } from '@portfolio/utils/locale'
 import {
   countTag,
@@ -25,6 +30,12 @@ export interface RevalidationPayload {
    * field.
    */
   language?: string
+  /**
+   * For `translation.metadata` events only: the ids of every document in the
+   * translation group, from
+   * `coalesce(translations[].value._ref, before().translations[].value._ref)`.
+   */
+  refs?: string[]
 }
 
 /**
@@ -109,6 +120,22 @@ export function buildRevalidationTags(
   }
 
   if (type === GlobalItemsType.Settings) {
+    tags.add('sanity:settings')
+  }
+
+  if (type === PluginDocumentType.TranslationMetadata) {
+    // Linking or unlinking a translation edits only this metadata document,
+    // never the pages themselves. Its own id tag reaches every page that
+    // already cached the group's translations block; the referenced ids reach
+    // the pages that didn't — the first link, when no cached page holds the
+    // metadata id yet — and, through `before()`, a version just unlinked.
+    for (const ref of payload.refs ?? []) {
+      tags.add(idTag(ref))
+    }
+
+    // hreflang alternates in the sitemap, and nav items that resolve to their
+    // translation in each locale's settings entry.
+    tags.add('sanity:sitemap')
     tags.add('sanity:settings')
   }
 

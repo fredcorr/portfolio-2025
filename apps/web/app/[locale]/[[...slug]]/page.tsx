@@ -12,6 +12,7 @@ import { buildPageUrl } from '@/utils/slug'
 import { getOpenGraphImage } from '@/utils/get-open-graph-image'
 import { getBreadcrumbSchema } from '@/utils/get-breadcrumb-schema'
 import { getPageSchemas } from '@/utils/get-page-schemas'
+import { getHreflangAlternates } from '@/utils/get-hreflang-alternates'
 import getSettings from '@/utils/get-settings'
 import JsonLdSchema from '@/components/atoms/JsonLdSchema/JsonLdSchema'
 import { locale as rootLocale } from 'next/root-params'
@@ -147,6 +148,7 @@ export async function generateMetadata({
       description,
       alternates: {
         canonical: url,
+        languages: getHreflangAlternates(siteUrl, page),
       },
       robots: {
         index: indexPage,

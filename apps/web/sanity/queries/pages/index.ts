@@ -6,7 +6,7 @@ import { contactPageFields } from './contact-page'
 import { homePageFields } from './home-page'
 import { pageTypeFields } from './page'
 import { projectPageFields } from './project-page'
-import { basePageFields } from '../fragments'
+import { basePageFields, translationsFields } from '../fragments'
 
 export {
   aboutPageFields,
@@ -19,6 +19,7 @@ export {
 }
 
 export const pageDocumentFields = groq`
+  ${translationsFields},
   ...select(
     _type == "${PageTypeName.HomePage}" => {
       ${homePageFields}
