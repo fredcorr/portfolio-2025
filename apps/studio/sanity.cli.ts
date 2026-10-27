@@ -2,14 +2,26 @@ import { resolve } from 'node:path'
 import { defineCliConfig } from 'sanity/cli'
 import { SanityDataset } from '@portfolio/types/base'
 
+const KNOWN_DATASETS = Object.values(SanityDataset)
+const dataset = process.env.SANITY_STUDIO_DATASET || SanityDataset.Develop
+
+// `sanity build` bundles sanity.config.ts without running it, so its dataset
+// check would only surface in the browser. This file does run at build and
+// deploy time, so a typo fails here instead of shipping a broken Studio.
+if (!KNOWN_DATASETS.includes(dataset as SanityDataset)) {
+  throw new Error(
+    `Unknown SANITY_STUDIO_DATASET "${dataset}" — expected one of: ${KNOWN_DATASETS.join(', ')}`
+  )
+}
+
 export default defineCliConfig({
   api: {
     projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-    // Datasets are declared per workspace in sanity.config.ts; this only sets
-    // the default target for CLI commands (dataset export, migration run,
-    // schema deploy). It defaults to develop so an unset env can never point a
-    // destructive command at prod — pass `--dataset prod` explicitly instead.
-    dataset: process.env.SANITY_STUDIO_DATASET || SanityDataset.Develop,
+    // The same variable picks the Studio's single dataset in sanity.config.ts,
+    // so the CLI and the deployed Studio always agree. It defaults to develop
+    // so an unset env can never point a destructive command at prod — pass
+    // `--dataset prod` explicitly instead.
+    dataset,
   },
 
   vite: {
