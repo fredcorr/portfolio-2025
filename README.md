@@ -238,9 +238,10 @@ differs.
 | Safe to break? | Yes | No — export a backup first |
 
 **Where dataset names live.** Exactly one place: the `SanityDataset` enum in
-`shared/types/base.ts`. `apps/studio/sanity.config.ts` validates
-`SANITY_STUDIO_DATASET` against it, and `apps/web/sanity/client.ts` validates
-`SANITY_DATASET` against it — an unknown name fails the build.
+`shared/types/base.ts`. `apps/studio/sanity.cli.ts` validates
+`SANITY_STUDIO_DATASET` against it (the CLI config runs at build time, so an
+unknown name fails `sanity build`), and `apps/web/sanity/client.ts` validates
+`SANITY_DATASET` against it.
 
 **One dataset per deployment.** The Studio exports a single workspace whose
 dataset comes from `SANITY_STUDIO_DATASET` at build time, so a deployment can
