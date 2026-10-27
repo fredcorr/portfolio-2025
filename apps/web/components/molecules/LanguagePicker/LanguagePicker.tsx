@@ -125,10 +125,20 @@ const LanguagePicker = ({
       id={barId}
       role="toolbar"
       aria-label={strings.toolbarLabel}
-      hidden={!isOpen}
+      aria-hidden={!isOpen}
       onKeyDown={handleBarKeyDown}
       className={cn(
         'border-t border-gray-100 border-b border-b-foreground bg-background text-foreground',
+        // Stays mounted so it can animate; `invisible` keeps a closed bar out
+        // of the tab order and the accessibility tree, as `hidden` would.
+        // Visibility is only transitioned on the way out (it stays visible
+        // until the fade ends); on the way in it flips at once, so the
+        // current option can take focus immediately. `translate-*` sets the
+        // `translate` property, not `transform`.
+        'duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
+        isOpen
+          ? 'visible translate-y-0 opacity-100 transition-[opacity,translate]'
+          : 'pointer-events-none invisible -translate-y-2 opacity-0 transition-[opacity,translate,visibility]',
         // Inside a nav the container positions it; on its own it hangs
         // from the trigger's wrapper.
         !panelContainer && 'absolute inset-x-0 top-full'
@@ -142,8 +152,16 @@ const LanguagePicker = ({
           {strings.readIn}
         </span>
         <ul className="flex flex-1 gap-1">
-          {options.map(option => (
-            <li key={option.locale}>
+          {options.map((option, index) => (
+            <li
+              key={option.locale}
+              // Staggered in like the nav items; leaving, they go together.
+              style={{ transitionDelay: isOpen ? `${index * 60}ms` : '0ms' }}
+              className={cn(
+                'transition-[opacity,translate] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
+                isOpen ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'
+              )}
+            >
               <Link
                 href={option.href}
                 hrefLang={option.locale}
@@ -202,7 +220,7 @@ const LanguagePicker = ({
         <Icon
           name="chevron-down"
           className={cn(
-            'size-3 shrink-0 transition-transform duration-200 motion-reduce:transition-none',
+            'size-3 shrink-0 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
             isOpen && 'rotate-180'
           )}
         />

@@ -43,7 +43,10 @@ test('marks the current language and shows its code on a closed trigger', () => 
   )
   assert.match(markup, /aria-expanded="false"/)
   assert.match(markup, />EN</)
-  assert.match(markup, /role="toolbar"[^>]*hidden=""/)
+  assert.match(
+    markup,
+    /role="toolbar"[^>]*aria-hidden="true"[^>]*class="[^"]*invisible/
+  )
 })
 
 test('an untranslated language links to its homepage and says so', () => {

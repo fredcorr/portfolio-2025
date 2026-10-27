@@ -128,7 +128,7 @@ const Navigation = ({
         data-organism="navigation"
         data-development="Sticky navigation that stays visible when not scrolling."
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 px-4 transition-[transform,opacity] duration-300 md:px-6',
+          'fixed top-0 left-0 right-0 z-50 px-4 transition-[transform,opacity,background-color] duration-300 md:px-6',
           // The blend inverts the nav over whatever is behind it; an open
           // language bar is opaque, so the nav sits on the background instead.
           isPickerOpen ? 'bg-background text-foreground' : 'md:text-white',
