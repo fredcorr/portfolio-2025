@@ -4,6 +4,7 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { Locale } from '@portfolio/types/base'
 
 import Icon from '@/components/atoms/Icon/Icon'
@@ -14,7 +15,7 @@ import {
 import { cn } from '@/utils/cn'
 import type { LanguageOption } from '@/utils/get-language-options'
 import useFocusTrap from '@/utils/use-focus-trap'
-import { LANGUAGE_NAMES, LANGUAGE_PICKER_STRINGS } from './strings'
+import { LANGUAGE_NAMES } from './language-names'
 
 export interface LanguagePickerProps {
   locale: Locale
@@ -23,19 +24,6 @@ export interface LanguagePickerProps {
 }
 
 const OPTION_SELECTOR = '[data-language-option]'
-
-const getOptionLabel = (
-  option: LanguageOption,
-  strings: (typeof LANGUAGE_PICKER_STRINGS)[Locale]
-) => {
-  const name = LANGUAGE_NAMES[option.locale]
-
-  if (option.isCurrent) {
-    return `${name} (${strings.current})`
-  }
-
-  return option.isAvailable ? name : `${name} — ${strings.homepageFallback}`
-}
 
 const LanguagePicker = ({
   locale,
@@ -48,7 +36,17 @@ const LanguagePicker = ({
   const rootRef = React.useRef<HTMLDivElement | null>(null)
   const barRef = React.useRef<HTMLDivElement | null>(null)
   const barId = React.useId()
-  const strings = LANGUAGE_PICKER_STRINGS[locale]
+  const t = useTranslations('languagePicker')
+
+  const getOptionLabel = (option: LanguageOption) => {
+    const name = LANGUAGE_NAMES[option.locale]
+
+    if (option.isCurrent) {
+      return t('current', { name })
+    }
+
+    return option.isAvailable ? name : t('homepageFallback', { name })
+  }
 
   const close = React.useCallback(() => setOpen(false), [setOpen])
 
@@ -124,7 +122,7 @@ const LanguagePicker = ({
       ref={barRef}
       id={barId}
       role="toolbar"
-      aria-label={strings.toolbarLabel}
+      aria-label={t('toolbarLabel')}
       aria-hidden={!isOpen}
       onKeyDown={handleBarKeyDown}
       className={cn(
@@ -149,7 +147,7 @@ const LanguagePicker = ({
           aria-hidden="true"
           className="font-heading text-label uppercase tracking-[0.12em] text-gray-200"
         >
-          {strings.readIn}
+          {t('readIn')}
         </span>
         <ul className="flex flex-1 gap-1">
           {options.map(option => (
@@ -160,7 +158,7 @@ const LanguagePicker = ({
                 lang={option.locale}
                 data-language-option
                 aria-current={option.isCurrent ? 'true' : undefined}
-                aria-label={getOptionLabel(option, strings)}
+                aria-label={getOptionLabel(option)}
                 onClick={close}
                 className={cn(
                   'group relative inline-flex min-h-12 items-center px-3 font-body text-body-lg tracking-[-0.01em] text-foreground md:min-h-11',
@@ -183,7 +181,7 @@ const LanguagePicker = ({
         </ul>
         <button
           type="button"
-          aria-label={strings.close}
+          aria-label={t('close')}
           onClick={close}
           className="inline-flex size-11 shrink-0 items-center justify-center transition hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-foreground"
         >
@@ -207,7 +205,7 @@ const LanguagePicker = ({
         onClick={() => setOpen(!isOpen)}
         className="inline-flex min-h-11 items-center gap-2 px-3 font-body text-body-lg tracking-[-0.02em] text-current transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
       >
-        <span className="sr-only">{strings.triggerPrefix}</span>
+        <span className="sr-only">{t('triggerPrefix')}</span>
         <span>{locale.toUpperCase()}</span>
         <Icon
           name="chevron-down"

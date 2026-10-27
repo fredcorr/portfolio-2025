@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
+import { NextIntlClientProvider } from 'next-intl'
 import { SUPPORTED_LOCALES } from '@portfolio/types/base'
 import { isLocale } from '@portfolio/utils/locale'
 import '../globals.css'
@@ -77,33 +78,35 @@ export default async function RootLayout({
         >
           Skip to main content
         </a>
-        <SettingsProvider initialSettings={settings}>
-          <Navigation
-            items={items}
-            projectCount={projectCount}
-            locale={locale}
-            languageSwitch={languages}
-          />
-          <main
-            id="main-content"
-            className="mx-auto min-h-screen w-full bg-background pt-20 md:pt-24 xl:mx-auto xl:max-w-8xl"
-          >
-            {children}
-          </main>
-          <Footer
-            email={settings?.email}
-            socialLinks={settings?.socialLinks}
-            navigationItems={settings?.navigationItems}
-            openForProjects={settings?.openForProjects}
-            availabilityText={settings?.availabilityText}
-            year={copyrightYear}
-          />
-          <ThemeToggle />
-          <GtmProvider />
-          <CookieBanner />
-          <Analytics />
-          <SpeedInsights />
-        </SettingsProvider>
+        <NextIntlClientProvider>
+          <SettingsProvider initialSettings={settings}>
+            <Navigation
+              items={items}
+              projectCount={projectCount}
+              locale={locale}
+              languageSwitch={languages}
+            />
+            <main
+              id="main-content"
+              className="mx-auto min-h-screen w-full bg-background pt-20 md:pt-24 xl:mx-auto xl:max-w-8xl"
+            >
+              {children}
+            </main>
+            <Footer
+              email={settings?.email}
+              socialLinks={settings?.socialLinks}
+              navigationItems={settings?.navigationItems}
+              openForProjects={settings?.openForProjects}
+              availabilityText={settings?.availabilityText}
+              year={copyrightYear}
+            />
+            <ThemeToggle />
+            <GtmProvider />
+            <CookieBanner />
+            <Analytics />
+            <SpeedInsights />
+          </SettingsProvider>
+        </NextIntlClientProvider>
         {isDraftMode && <VisualEditingEnabled />}
       </body>
     </html>

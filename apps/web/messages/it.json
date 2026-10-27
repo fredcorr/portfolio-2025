@@ -1,0 +1,22 @@
+{
+  "nav": {
+    "openMenu": "Apri il menu di navigazione",
+    "closeMenu": "Chiudi il menu di navigazione",
+    "openMenuIcon": "Apri menu",
+    "closeMenuIcon": "Chiudi menu",
+    "home": "Vai alla homepage"
+  },
+  "languagePicker": {
+    "triggerPrefix": "Lingua: ",
+    "toolbarLabel": "Scegli la lingua",
+    "readIn": "Leggi in",
+    "close": "Chiudi selettore lingua",
+    "current": "{name} (attuale)",
+    "homepageFallback": "{name} — pagina non tradotta, apre la homepage"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Pagina non trovata",
+    "body": "Non abbiamo trovato la pagina che cercavi. Controlla l'indirizzo o torna alla homepage."
+  }
+}

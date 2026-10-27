@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 import { withBotId } from 'botid/next/config'
+import createNextIntlPlugin from 'next-intl/plugin'
 import path from 'path'
 
 const nextConfig: NextConfig = {
@@ -68,4 +69,16 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withBotId(nextConfig)
+// Messages and formatting only; the request config reads the `[locale]` root
+// param. Routing stays with proxy.ts.
+const withNextIntl = createNextIntlPlugin({
+  requestConfig: './i18n/request.ts',
+  experimental: {
+    // Generates messages/en.d.json.ts with the literal message text, so a
+    // missing or misnamed ICU argument (`{name}`) fails typecheck too, not
+    // just an unknown key.
+    createMessagesDeclaration: './messages/en.json',
+  },
+})
+
+export default withBotId(withNextIntl(nextConfig))
