@@ -43,9 +43,12 @@ export function generateStaticParams() {
 
 export default async function RootLayout({
   children,
+  languages,
   params,
 }: Readonly<{
   children: React.ReactNode
+  /** The `@languages` slot: the picker for the current page. */
+  languages: React.ReactNode
   params: Promise<{ locale: string }>
 }>) {
   const { locale } = await params
@@ -75,7 +78,12 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <SettingsProvider initialSettings={settings}>
-          <Navigation items={items} projectCount={projectCount} />
+          <Navigation
+            items={items}
+            projectCount={projectCount}
+            locale={locale}
+            languageSwitch={languages}
+          />
           <main
             id="main-content"
             className="mx-auto min-h-screen w-full bg-background pt-20 md:pt-24 xl:mx-auto xl:max-w-8xl"
