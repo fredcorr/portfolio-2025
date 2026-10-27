@@ -50,7 +50,7 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "env": ["SANITY_DATASET"]
+      "env": ["SANITY_DATASET", "SANITY_STUDIO_DATASET"]
     },
     "start": {
       "cache": false,
