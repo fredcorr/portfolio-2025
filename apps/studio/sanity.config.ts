@@ -26,21 +26,6 @@ if (!process.env.SANITY_STUDIO_PROJECT_ID) {
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID
 
-const KNOWN_DATASETS = Object.values(SanityDataset)
-
-// Each deployment serves exactly one dataset, picked per Vercel environment
-// (prod on studio.fred-corr.com, develop on dev.studio.fred-corr.com).
-// Unset falls back to develop so nothing reaches prod without opting in.
-const dataset = process.env.SANITY_STUDIO_DATASET || SanityDataset.Develop
-
-// Fail the build on a typo rather than shipping a Studio that edits a dataset
-// that does not exist.
-if (!KNOWN_DATASETS.includes(dataset as SanityDataset)) {
-  throw new Error(
-    `Unknown SANITY_STUDIO_DATASET "${dataset}" — expected one of: ${KNOWN_DATASETS.join(', ')}`
-  )
-}
-
 const stripTrailingSlash = (url: string) => url.replace(/\/$/, '')
 
 const developPreviewUrl = stripTrailingSlash(
@@ -58,12 +43,15 @@ const prodPreviewUrl = stripTrailingSlash(
 interface StudioWorkspaceOptions {
   name: string
   title: string
+  basePath: string
   dataset: SanityDataset
   previewUrl: string
   /**
    * Document-level translations (English / Italian). Off by default so a
-   * dataset only gains the plugin, the `language` field and the per-locale
-   * structure once it is opted in.
+   * workspace only gains the plugin, the `language` field and the per-locale
+   * structure once it is opted in — the one Studio deployment serves every
+   * workspace, so without this a translation created under `/prod` on a
+   * preview deploy would write to the prod dataset.
    */
   i18n?: boolean
 }
@@ -71,20 +59,20 @@ interface StudioWorkspaceOptions {
 const TRANSLATABLE_TYPES: string[] = Object.values(PageTypeName)
 
 /**
- * Every dataset shares every plugin, schema and document rule — only the
+ * Both workspaces share every plugin, schema and document rule — only the
  * dataset, the preview target and whether translations are enabled differ.
  */
 const createWorkspace = ({
   name,
   title,
+  basePath,
   dataset,
   previewUrl,
   i18n = false,
 }: StudioWorkspaceOptions): WorkspaceOptions => ({
   name,
   title,
-  // One workspace per deployment, so it owns the root.
-  basePath: '/',
+  basePath,
 
   projectId,
   dataset,
@@ -171,22 +159,20 @@ const createWorkspace = ({
     : {}),
 })
 
-const WORKSPACES: Record<SanityDataset, StudioWorkspaceOptions> = {
-  [SanityDataset.Develop]: {
+export default defineConfig([
+  createWorkspace({
     name: SanityDataset.Develop,
     title: 'Portfolio Studio — Develop',
+    basePath: '/develop',
     dataset: SanityDataset.Develop,
     previewUrl: developPreviewUrl,
     i18n: true,
-  },
-  [SanityDataset.Prod]: {
+  }),
+  createWorkspace({
     name: SanityDataset.Prod,
     title: 'Portfolio Studio — Production',
+    basePath: '/prod',
     dataset: SanityDataset.Prod,
     previewUrl: prodPreviewUrl,
-  },
-}
-
-export default defineConfig(
-  createWorkspace(WORKSPACES[dataset as SanityDataset])
-)
+  }),
+])
