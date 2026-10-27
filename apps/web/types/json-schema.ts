@@ -25,6 +25,8 @@ export type BreadcrumbListSchema = {
 export type WebSiteSchema = {
   '@context': 'https://schema.org'
   '@type': 'WebSite'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   name: string
   url: string
   description?: string
@@ -45,6 +47,8 @@ export type ItemListSchema = {
 export type FAQPageSchema = {
   '@context': 'https://schema.org'
   '@type': 'FAQPage'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   mainEntity: Array<{
     '@type': 'Question'
     name: string
@@ -55,6 +59,8 @@ export type FAQPageSchema = {
 export type ProfilePageSchema = {
   '@context': 'https://schema.org'
   '@type': 'ProfilePage'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   name: string
   url: string
   dateModified: string
@@ -66,6 +72,8 @@ export type ProfilePageSchema = {
 export type ContactPageSchema = {
   '@context': 'https://schema.org'
   '@type': 'ContactPage'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   name: string
   url: string
   dateModified: string
@@ -76,6 +84,8 @@ export type ContactPageSchema = {
 export type CreativeWorkSchema = {
   '@context': 'https://schema.org'
   '@type': 'CreativeWork'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   name: string
   url: string
   mainEntityOfPage: {
@@ -93,6 +103,8 @@ export type CreativeWorkSchema = {
 export type ArticleSchema = {
   '@context': 'https://schema.org'
   '@type': 'Article'
+  /** BCP 47 language of the page, e.g. `it`. */
+  inLanguage?: string
   headline: string
   url: string
   mainEntityOfPage: {

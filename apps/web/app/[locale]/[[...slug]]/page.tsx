@@ -3,6 +3,7 @@ import { RenderTemplate } from '@/components/hoc/RenderTemplate'
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import getPage from '@/utils/get-page'
 import { getSiteUrl } from '@/utils/get-site-url'
 import { buildPageUrl } from '@/utils/slug'
@@ -41,7 +42,8 @@ export default async function Page({ params }: PageProps) {
   }
 
   const siteUrl = getSiteUrl()
-  const breadcrumbSchema = getBreadcrumbSchema(siteUrl, page, slug)
+  const t = await getTranslations('breadcrumbs')
+  const breadcrumbSchema = getBreadcrumbSchema(siteUrl, page, t('home'), slug)
 
   const { settings } = await getSettings(locale)
   const pageSchemas = getPageSchemas(siteUrl, page, settings)

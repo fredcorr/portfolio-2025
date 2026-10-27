@@ -1,6 +1,7 @@
 'use client'
 
 import { buildShareItems, ShareItem } from '@/utils/build-share-items'
+import { useTranslations } from 'next-intl'
 import { useState, useCallback, Fragment } from 'react'
 import Icon from '@/components/atoms/Icon/Icon'
 
@@ -15,6 +16,7 @@ const Shares: React.FC<ShareProps> = ({
   shareUrl,
   showReaderCount = false,
 }) => {
+  const t = useTranslations('article')
   const [copied, setCopied] = useState(false)
   const shareItems = buildShareItems(shareUrl, shareTitle)
   const railBtn =
@@ -34,21 +36,21 @@ const Shares: React.FC<ShareProps> = ({
   const allShareActions: ShareItem[] = [
     ...shareItems,
     {
-      label: copied ? 'Copied!' : 'Copy link',
+      label: copied ? t('copied') : t('copyLink'),
       icon: copied ? 'check' : 'link',
       onClick: handleCopy,
     },
-    { label: 'Bookmark', icon: 'bookmark' },
+    { label: t('bookmark'), icon: 'bookmark' },
   ]
 
   return (
     <aside
-      aria-label="Article actions"
+      aria-label={t('actions')}
       className="md:sticky md:top-24 md:self-start md:pt-1.5"
     >
       <div className="flex flex-row items-center gap-2 md:flex-col md:items-start md:gap-3">
         <span className="hidden font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70 md:mb-1.5 md:block">
-          Share
+          {t('share')}
         </span>
 
         {allShareActions.map(action => {

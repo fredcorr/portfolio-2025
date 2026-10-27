@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import RichText, { RichTextSize } from '@/components/atoms/RichText/RichText'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import { Heading, toHeadingTag } from '@/components/atoms/Heading/Heading'
@@ -17,6 +18,7 @@ const Cards = ({
   sectionId,
   componentIndex,
 }: CardsComponent) => {
+  const t = useTranslations()
   const headingId = makeComponentId({ value: _id || _key, prefix: 'cards' })
   const hasItems = Array.isArray(items) && items.length > 0
   const itemsList = hasItems ? items : []
@@ -65,7 +67,7 @@ const Cards = ({
           {itemsList.map((item, index) => (
             <Card
               key={item._key ?? `card-${index}`}
-              title={`• ${item.title || `Card ${index + 1}`}`}
+              title={`• ${item.title || t('media.cardFallbackTitle', { number: String(index + 1) })}`}
               subtitle={item.subtitle}
               subtitleSize={RichTextSize.Lg}
               as="li"
@@ -78,7 +80,7 @@ const Cards = ({
 
       {!hasItems && (
         <div className="md:col-span-12 border border-dashed border-black/10 bg-gray-50 px-6 py-10 text-center font-body text-body-lg text-black/70 dark:border-gray-200/40 dark:bg-gray-100 dark:text-foreground/70">
-          Cards will appear here once they are configured.
+          {t('empty.cards')}
         </div>
       )}
     </ComponentLayout>

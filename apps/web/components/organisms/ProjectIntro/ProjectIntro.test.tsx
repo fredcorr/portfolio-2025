@@ -2,12 +2,15 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import { projectIntroMock } from '@/mocks/organisms/project-intro'
 import ProjectIntro from './ProjectIntro'
 
 test('renders breadcrumbs with current page not clickable', () => {
-  const markup = renderToStaticMarkup(<ProjectIntro {...projectIntroMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ProjectIntro {...projectIntroMock} />)
+  )
 
   assert.match(markup, /aria-label="Breadcrumb"/)
   assert.match(markup, /href="\/projects"/)
@@ -19,11 +22,13 @@ test('renders breadcrumbs with current page not clickable', () => {
 
 test('uses currentLabel for the final crumb so it matches the schema', () => {
   const markup = renderToStaticMarkup(
-    <ProjectIntro
-      slug="/projects/websites"
-      title="Go by one dresscode"
-      currentLabel="Go by one dresscode"
-    />
+    withIntl(
+      <ProjectIntro
+        slug="/projects/websites"
+        title="Go by one dresscode"
+        currentLabel="Go by one dresscode"
+      />
+    )
   )
 
   assert.match(markup, />Go by one dresscode</)
@@ -31,7 +36,9 @@ test('uses currentLabel for the final crumb so it matches the schema', () => {
 })
 
 test('renders title and description when provided', () => {
-  const markup = renderToStaticMarkup(<ProjectIntro {...projectIntroMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ProjectIntro {...projectIntroMock} />)
+  )
 
   assert.match(markup, /Go by one dresscode/)
   assert.match(markup, /As emerging sectors arise/)
@@ -39,7 +46,7 @@ test('renders title and description when provided', () => {
 
 test('omits optional regions when content is missing', () => {
   const markup = renderToStaticMarkup(
-    <ProjectIntro breadcrumbs={[]} title="" description="" />
+    withIntl(<ProjectIntro breadcrumbs={[]} title="" description="" />)
   )
 
   assert.doesNotMatch(markup, /aria-label="Breadcrumb"/)

@@ -8,8 +8,13 @@ import {
 
 const SITE_URL = 'https://example.com'
 
+const schemaFor = (
+  page: Parameters<typeof getBreadcrumbSchema>[1],
+  fallbackSlug?: string
+) => getBreadcrumbSchema(SITE_URL, page, 'Home', fallbackSlug)
+
 test('builds a BreadcrumbList rooted at Home', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {
+  const schema = schemaFor({
     slug: { current: 'journals/restraint' },
   })
 
@@ -25,7 +30,7 @@ test('builds a BreadcrumbList rooted at Home', () => {
 })
 
 test('numbers positions from one and resolves absolute item URLs', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {
+  const schema = schemaFor({
     slug: { current: 'journals/restraint' },
   })
 
@@ -41,7 +46,7 @@ test('numbers positions from one and resolves absolute item URLs', () => {
 })
 
 test('names the final crumb from the page document, not the slug', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {
+  const schema = schemaFor({
     slug: { current: 'journals/on-the-discipline-of-restraint' },
     title: 'On the discipline of restraint',
   })
@@ -56,7 +61,7 @@ test('names the final crumb from the page document, not the slug', () => {
 })
 
 test('applies the same naming to every page type, not just articles', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {
+  const schema = schemaFor({
     slug: { current: 'projects/websites' },
     title: 'Go by one dresscode',
   })
@@ -69,7 +74,7 @@ test('applies the same naming to every page type, not just articles', () => {
 })
 
 test('leaves ancestor crumb names untouched', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {
+  const schema = schemaFor({
     slug: { current: 'journals/restraint' },
     title: 'A title',
   })
@@ -79,15 +84,15 @@ test('leaves ancestor crumb names untouched', () => {
 })
 
 test('falls back to the supplied slug when the document has none', () => {
-  const schema = getBreadcrumbSchema(SITE_URL, {}, 'journals/restraint')
+  const schema = schemaFor({}, 'journals/restraint')
 
   assert.ok(schema)
   assert.equal(schema.itemListElement.at(-1)?.name, 'Restraint')
 })
 
 test('returns null for the home page', () => {
-  assert.equal(getBreadcrumbSchema(SITE_URL, { slug: { current: '/' } }), null)
-  assert.equal(getBreadcrumbSchema(SITE_URL, {}), null)
+  assert.equal(schemaFor({ slug: { current: '/' } }), null)
+  assert.equal(schemaFor({}), null)
 })
 
 test('getBreadcrumbLabel prefers seoTitle then falls back to title', () => {
@@ -101,4 +106,18 @@ test('getBreadcrumbLabel prefers seoTitle then falls back to title', () => {
     'Doc title'
   )
   assert.equal(getBreadcrumbLabel({}), undefined)
+})
+
+test('an Italian page starts its trail at the Italian homepage', () => {
+  const schema = schemaFor({ slug: { current: 'it/journals/restraint' } })
+
+  assert.ok(schema)
+  assert.deepEqual(
+    schema.itemListElement.map(item => [item.name, item.item]),
+    [
+      ['Home', `${SITE_URL}/it`],
+      ['Journals', `${SITE_URL}/it/journals`],
+      ['Restraint', `${SITE_URL}/it/journals/restraint`],
+    ]
+  )
 })

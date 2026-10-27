@@ -1,12 +1,15 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { AnimatedStrapline, DEFAULT_STRAPLINE_TEXT } from './AnimatedStrapline'
+import { Locale } from '@portfolio/types/base'
+import { withIntl } from '@/test-utils/with-intl'
+import en from '@/messages/en.json'
+import { AnimatedStrapline } from './AnimatedStrapline'
 import { animatedStraplineMock } from '@/mocks/organisms/animated-strapline'
 
 test('renders the strapline text multiple times for continuous motion', () => {
   const markup = renderToStaticMarkup(
-    <AnimatedStrapline {...animatedStraplineMock} />
+    withIntl(<AnimatedStrapline {...animatedStraplineMock} />)
   )
   const occurrences =
     markup.match(new RegExp(animatedStraplineMock.strapline as string, 'g'))
@@ -18,8 +21,19 @@ test('renders the strapline text multiple times for continuous motion', () => {
 
 test('falls back to default strapline when missing', () => {
   const markup = renderToStaticMarkup(
-    <AnimatedStrapline {...animatedStraplineMock} strapline="" />
+    withIntl(<AnimatedStrapline {...animatedStraplineMock} strapline="" />)
   )
 
-  assert.match(markup, new RegExp(DEFAULT_STRAPLINE_TEXT))
+  assert.match(markup, new RegExp(en.strapline.default))
+})
+
+test('the default strapline follows the page language', () => {
+  const markup = renderToStaticMarkup(
+    withIntl(
+      <AnimatedStrapline {...animatedStraplineMock} strapline="" />,
+      Locale.Italian
+    )
+  )
+
+  assert.match(markup, /Visual design per esperienze digitali/)
 })

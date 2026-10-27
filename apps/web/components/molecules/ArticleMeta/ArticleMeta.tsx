@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import type { ArticleIntroProps } from '@portfolio/types/components'
 import { cn } from '@/utils/cn'
 import { StaggerChildren } from '@/components/animation/StaggerChildren/StaggerChildren'
@@ -25,9 +26,10 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
   editionNumber,
   className,
 }) => {
+  const t = useTranslations('article')
   const authorName =
     [author?.firstName, author?.secondName].filter(Boolean).join(' ') ||
-    'Author'
+    t('authorFallback')
   const authorInitials =
     [author?.firstName?.[0], author?.secondName?.[0]]
       .filter(Boolean)
@@ -63,7 +65,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
         className="col-span-2 flex flex-col gap-1.5 md:col-span-4"
       >
         <dt className="font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70">
-          Written by
+          {t('writtenBy')}
         </dt>
         <dd className="flex items-center gap-2.5 font-heading text-[15px] tracking-[-0.01em] text-black dark:text-foreground">
           <span
@@ -80,7 +82,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
       {dateLabel && (
         <FadeIn as="div" className="flex flex-col gap-1.5 md:col-span-2">
           <dt className="font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70">
-            Published
+            {t('published')}
           </dt>
           <dd className="font-heading text-[15px] tracking-[-0.01em] text-black dark:text-foreground">
             {dateLabel}
@@ -92,7 +94,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
       {readTimeLabel && (
         <FadeIn as="div" className="flex flex-col gap-1.5 md:col-span-2">
           <dt className="font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70">
-            Reading time
+            {t('readingTime')}
           </dt>
           <dd className="font-heading text-[15px] tracking-[-0.01em] text-black dark:text-foreground">
             {readTimeLabel}
@@ -104,7 +106,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
       {topicsLabel && (
         <FadeIn as="div" className="flex flex-col gap-1.5 md:col-span-2">
           <dt className="font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70">
-            Topics
+            {t('topics')}
           </dt>
           <dd className="font-heading text-[15px] tracking-[-0.01em] text-black dark:text-foreground">
             {topicsLabel}
@@ -116,7 +118,7 @@ const ArticleMeta: React.FC<ArticleMetaProps> = ({
       {editionLabel && (
         <FadeIn as="div" className="flex flex-col gap-1.5 md:col-span-2">
           <dt className="font-heading text-label uppercase tracking-[0.14em] text-black/70 dark:text-foreground/70">
-            Edition
+            {t('edition')}
           </dt>
           <dd className="font-heading text-[15px] tracking-[-0.01em] text-black dark:text-foreground">
             {editionLabel}

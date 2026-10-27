@@ -2,12 +2,15 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import ArticleIntro from './ArticleIntro'
 import { articleIntroMock } from '@/mocks/organisms/article-intro'
 
 test('renders breadcrumbs, title, deck, and meta grid', () => {
-  const markup = renderToStaticMarkup(<ArticleIntro {...articleIntroMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ArticleIntro {...articleIntroMock} />)
+  )
 
   assert.match(markup, /aria-label="Breadcrumb"/)
   assert.match(markup, /On the discipline of restraint/)
@@ -19,7 +22,9 @@ test('renders breadcrumbs, title, deck, and meta grid', () => {
 })
 
 test('links the parent journals crumb and marks the article as current', () => {
-  const markup = renderToStaticMarkup(<ArticleIntro {...articleIntroMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ArticleIntro {...articleIntroMock} />)
+  )
 
   assert.match(markup, /href="\/journals"/)
   assert.match(markup, />Journals</)
@@ -30,10 +35,12 @@ test('links the parent journals crumb and marks the article as current', () => {
 
 test('uses the article title rather than the slug for the final crumb', () => {
   const markup = renderToStaticMarkup(
-    <ArticleIntro
-      slug="journals/on-the-discipline-of-restraint"
-      title="On the discipline of restraint"
-    />
+    withIntl(
+      <ArticleIntro
+        slug="journals/on-the-discipline-of-restraint"
+        title="On the discipline of restraint"
+      />
+    )
   )
 
   assert.match(markup, /On the discipline of restraint/)
@@ -41,7 +48,9 @@ test('uses the article title rather than the slug for the final crumb', () => {
 })
 
 test('renders without a slug and omits the breadcrumb region entirely', () => {
-  const markup = renderToStaticMarkup(<ArticleIntro title="Minimal title" />)
+  const markup = renderToStaticMarkup(
+    withIntl(<ArticleIntro title="Minimal title" />)
+  )
 
   assert.match(markup, /Minimal title/)
   assert.doesNotMatch(markup, /aria-label="Breadcrumb"/)
@@ -52,12 +61,12 @@ test('renders without a slug and omits the breadcrumb region entirely', () => {
 })
 
 test('renders with no props at all', () => {
-  assert.doesNotThrow(() => renderToStaticMarkup(<ArticleIntro />))
+  assert.doesNotThrow(() => renderToStaticMarkup(withIntl(<ArticleIntro />)))
 })
 
 test('treats a whitespace-only slug as having no hierarchy', () => {
   const markup = renderToStaticMarkup(
-    <ArticleIntro slug="   " title="Minimal title" />
+    withIntl(<ArticleIntro slug="   " title="Minimal title" />)
   )
 
   assert.match(markup, /Minimal title/)
@@ -66,12 +75,14 @@ test('treats a whitespace-only slug as having no hierarchy', () => {
 
 test('no longer renders tags or edition number in the breadcrumb row', () => {
   const markup = renderToStaticMarkup(
-    <ArticleIntro
-      slug="journals/on-the-discipline-of-restraint"
-      title="On the discipline of restraint"
-      tags={['Essay']}
-      editionNumber={14}
-    />
+    withIntl(
+      <ArticleIntro
+        slug="journals/on-the-discipline-of-restraint"
+        title="On the discipline of restraint"
+        tags={['Essay']}
+        editionNumber={14}
+      />
+    )
   )
 
   const breadcrumbNav = markup.slice(

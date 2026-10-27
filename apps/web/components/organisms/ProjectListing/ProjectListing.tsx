@@ -1,3 +1,6 @@
+import { useLocale, useTranslations } from 'next-intl'
+import { toCmsSlug } from '@portfolio/utils/locale'
+import getPagePath from '@/utils/get-page-path'
 import RichText, { RichTextSize } from '@/components/atoms/RichText/RichText'
 import type { ProjectListingComponent } from '@portfolio/types/components'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
@@ -23,6 +26,10 @@ const ProjectListing = ({
   sectionId,
   componentIndex,
 }: ProjectListingComponent) => {
+  const t = useTranslations()
+  const projectsHref = getPagePath({
+    slug: toCmsSlug(useLocale(), ['projects']),
+  })
   const itemListSchema = buildItemListSchema(getSiteUrl(), projects ?? [])
 
   const hasSubtitle = subtitle?.length
@@ -61,10 +68,10 @@ const ProjectListing = ({
 
             {showCtaToProjects && (
               <Link
-                href="/projects"
+                href={projectsHref}
                 className="inline-flex items-center gap-2 px-4 py-2 font-heading text-body-lg font-medium text-black transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-foreground"
               >
-                <span>More</span>
+                <span>{t('common.more')}</span>
                 <span aria-hidden="true">→</span>
               </Link>
             )}
@@ -109,7 +116,7 @@ const ProjectListing = ({
           </StaggerChildren>
         ) : (
           <div className="md:col-span-12 bg-gray-50 px-6 py-10 text-black/70 dark:bg-gray-100 dark:text-foreground/70">
-            Projects will appear here once they are published.
+            {t('empty.projects')}
           </div>
         )}
       </ComponentLayout>

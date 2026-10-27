@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import type { ToolSetItem } from '@portfolio/types/components'
 
 import Image from '@/components/atoms/Image/Image'
@@ -9,6 +10,7 @@ export interface ToolCardProps extends ToolSetItem {
 }
 
 const ToolCard = ({ title, subtitle, image, className }: ToolCardProps) => {
+  const t = useTranslations('media')
   const hasTitle = Boolean(title)
   const hasSubtitle = Boolean(subtitle)
   const imageUrl = image?.asset?.url
@@ -18,7 +20,8 @@ const ToolCard = ({ title, subtitle, image, className }: ToolCardProps) => {
     return null
   }
 
-  const altText = image?.alt || (title && `${title} logo`) || 'Tool logo'
+  const altText =
+    image?.alt || (title && t('toolLogo', { title })) || t('toolLogoFallback')
 
   return (
     <SlideInStagger

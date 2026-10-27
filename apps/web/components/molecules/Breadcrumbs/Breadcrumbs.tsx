@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import Link from 'next/link'
 
@@ -17,6 +18,7 @@ const Breadcrumbs = ({
   className,
   ...props
 }: BreadcrumbsProps) => {
+  const t = useTranslations('breadcrumbs')
   const derivedItems = slugToBreadcrumbs(slug, currentLabel)
   const visibleItems = derivedItems.filter(item => item.label.trim().length > 0)
 
@@ -26,7 +28,7 @@ const Breadcrumbs = ({
 
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label={t('label')}
       className={cn('text-sm font-medium tracking-tight', className)}
       {...props}
     >

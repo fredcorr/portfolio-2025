@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import type { ArticleContentProps as ArticleContentSharedProps } from '@portfolio/types/components'
 import type {
   CodeBlock as CodeBlockType,
@@ -32,6 +33,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
   nextUrl,
   className,
 }) => {
+  const t = useTranslations('article')
   const hasContent = Boolean(content && content.length)
   const hasShare = shareUrl && shareTitle
   const hasNav = Boolean(prevUrl || nextUrl)
@@ -135,7 +137,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
               className="my-14 text-center font-heading text-label uppercase tracking-[0.18em] text-black/70 dark:text-foreground/70"
             >
               <span className="mb-3 block text-sm leading-none">■</span>
-              End
+              {t('end')}
             </div>
           </div>
         )}
@@ -171,20 +173,20 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
             {prevUrl && (
               <a
                 href={prevUrl}
-                aria-label="Previous article"
+                aria-label={t('previousArticle')}
                 className="inline-flex items-center gap-2 border border-gray-100 px-4 py-3 font-heading text-[13px] text-black dark:border-gray-100 dark:text-foreground transition hover:-translate-y-0.5"
               >
                 <Icon name="chevron-left" className="size-3.5" />
-                Previous
+                {t('previous')}
               </a>
             )}
             {nextUrl && (
               <a
                 href={nextUrl}
-                aria-label="Next article"
+                aria-label={t('nextArticle')}
                 className="inline-flex items-center gap-2 border border-gray-100 px-4 py-3 font-heading text-[13px] text-black dark:border-gray-100 dark:text-foreground transition hover:-translate-y-0.5"
               >
-                Next
+                {t('next')}
                 <Icon name="chevron-right" className="size-3.5" />
               </a>
             )}

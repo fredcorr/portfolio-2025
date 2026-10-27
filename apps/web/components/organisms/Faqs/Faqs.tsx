@@ -1,4 +1,5 @@
 import React from 'react'
+import { useLocale } from 'next-intl'
 import type { FaqsComponent } from '@portfolio/types/components'
 import type { PortableTextBlock } from '@portabletext/react'
 
@@ -31,6 +32,7 @@ const Faqs = ({
   sectionId,
   componentIndex,
 }: FaqsComponent) => {
+  const locale = useLocale()
   const headingText = title?.heading
   const hasHeading = Boolean(headingText)
   const hasQuestions = Boolean(questions && questions.length)
@@ -48,6 +50,7 @@ const Faqs = ({
     ? {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
+        inLanguage: locale,
         mainEntity: validQuestions.map(q => ({
           '@type': 'Question' as const,
           name: q.question!,

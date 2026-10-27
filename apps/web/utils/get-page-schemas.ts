@@ -15,6 +15,7 @@ import type {
 } from '@/types/json-schema'
 import { PageTypeName } from '@portfolio/types/base'
 import { buildPageUrl } from '@/utils/slug'
+import { documentLocale } from '@/utils/collect-cache-tags'
 
 export interface SchemaEntry {
   id: string
@@ -282,5 +283,12 @@ export const getPageSchemas = (
     }
   }
 
-  return schemas
+  // Every schema built here describes the page itself, so all of them carry
+  // its language; a document from before translations existed is English.
+  const inLanguage = documentLocale(page.language)
+
+  return schemas.map(({ id, schema }) => ({
+    id,
+    schema: { ...schema, inLanguage },
+  }))
 }

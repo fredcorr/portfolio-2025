@@ -2,18 +2,21 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import ArticleContent from './ArticleContent'
 import { articleContentMock } from '@/mocks/organisms/article-content'
 
 test('renders share rail, rich text, and sign-off', () => {
   const markup = renderToStaticMarkup(
-    <ArticleContent
-      content={articleContentMock.content}
-      shareUrl={articleContentMock.shareUrl}
-      shareTitle={articleContentMock.shareTitle}
-      tags={['Design', 'Craft']}
-    />
+    withIntl(
+      <ArticleContent
+        content={articleContentMock.content}
+        shareUrl={articleContentMock.shareUrl}
+        shareTitle={articleContentMock.shareTitle}
+        tags={['Design', 'Craft']}
+      />
+    )
   )
 
   assert.match(markup, /Share/)
@@ -26,12 +29,12 @@ test('renders share rail, rich text, and sign-off', () => {
 
 test('renders sign-off even without content', () => {
   const markup = renderToStaticMarkup(
-    <ArticleContent shareUrl="https://example.com/a" />
+    withIntl(<ArticleContent shareUrl="https://example.com/a" />)
   )
   assert.match(markup, /Federico Corradi/)
 })
 
 test('returns empty markup when no content and no shareUrl', () => {
-  const markup = renderToStaticMarkup(<ArticleContent />)
+  const markup = renderToStaticMarkup(withIntl(<ArticleContent />))
   assert.equal(markup, '')
 })

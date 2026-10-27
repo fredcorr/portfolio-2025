@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import ReactSelect, {
   type ClassNamesConfig,
@@ -61,6 +62,7 @@ export type SelectProps =
  * nav, type-ahead, Escape, aria-live announcements).
  */
 const Select = (props: SelectProps) => {
+  const t = useTranslations('select')
   const {
     options,
     label,
@@ -156,7 +158,7 @@ const Select = (props: SelectProps) => {
         options={options}
         value={value}
         onChange={handleChange}
-        placeholder={placeholder ?? label ?? 'Select…'}
+        placeholder={placeholder ?? label ?? t('placeholder')}
         controlShouldRenderValue={controlShouldRenderValue}
         hideSelectedOptions={hideSelectedOptions}
         closeMenuOnSelect={closeMenuOnSelect ?? !isMulti}

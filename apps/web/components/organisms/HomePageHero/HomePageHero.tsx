@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import type { HomePageHeroComponent } from '@portfolio/types/components'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import OverlapAnimation from '@/components/hoc/OverlapAnimation'
@@ -24,6 +25,7 @@ export const HomePageHero = async ({
   // Only the contact email is read, and it is shared by every locale, so the
   // default locale's (already cached) settings entry serves every page.
   const { settings } = await getSettings(DEFAULT_LOCALE)
+  const t = await getTranslations('hero')
   const headline = title?.trim()
   const supportingCopy = subtitle?.trim()
   const contactLabel = getInTouchTitle?.trim()
@@ -71,12 +73,12 @@ export const HomePageHero = async ({
                     className="mt-8 mb-8 flex items-center gap-3"
                   >
                     <span className="font-heading text-sm uppercase tracking-wider">
-                      Scroll
+                      {t('scroll')}
                     </span>
                     <a
                       href={`#${ctaTarget}`}
                       className="inline-flex size-8 items-center justify-center border border-background/20 transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background"
-                      aria-label="Scroll to next section"
+                      aria-label={t('scrollLabel')}
                     >
                       <Icon
                         name="arrow-down"

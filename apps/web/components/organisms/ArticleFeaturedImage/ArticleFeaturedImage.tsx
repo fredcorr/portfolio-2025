@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import type { ArticleFeaturedImageProps } from '@portfolio/types/components'
 import Image from '@/components/atoms/Image/Image'
 import { cn } from '@/utils/cn'
@@ -9,6 +10,7 @@ interface Props extends ArticleFeaturedImageProps {
 }
 
 const ArticleFeaturedImage: React.FC<Props> = ({ heroImage, className }) => {
+  const t = useTranslations('article')
   const imageUrl = heroImage?.asset?.url
   if (!imageUrl) return null
 
@@ -21,7 +23,7 @@ const ArticleFeaturedImage: React.FC<Props> = ({ heroImage, className }) => {
     >
       <figure
         data-organism="article-featured-image"
-        aria-label="Featured image"
+        aria-label={t('featuredImage')}
         className="md:col-span-12"
       >
         <div className="relative aspect-video overflow-hidden bg-primary-600">

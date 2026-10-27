@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { ComponentLayout } from '@/components/hoc/ComponentLayout'
 import { makeComponentId } from '@/utils/makeComponentId'
 import WorkIndexRow from '@/components/molecules/WorkIndexRow/WorkIndexRow'
@@ -18,6 +19,7 @@ const WorkIndex = ({
   sectionId,
   componentIndex,
 }: WorkIndexComponent) => {
+  const t = useTranslations('empty')
   const headingId = makeComponentId({
     value: _id || _key,
     prefix: 'work-index',
@@ -95,7 +97,7 @@ const WorkIndex = ({
           </>
         ) : (
           <div className="border border-dashed border-black/10 bg-gray-50 px-6 py-10 text-center font-body text-body-lg text-black/70">
-            Projects will appear here once they are published.
+            {t('projects')}
           </div>
         )}
       </ComponentLayout>

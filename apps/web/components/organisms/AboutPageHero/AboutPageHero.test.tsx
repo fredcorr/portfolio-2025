@@ -2,13 +2,16 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import AboutPageHero from './AboutPageHero'
 import { aboutPageHeroMock } from '@/mocks/organisms/about-page-hero'
 import { DEFAULT_CONTACT_EMAIL } from '@/utils/get-contact-email'
 
 test('renders heading, body, meta row, secondary body, and CTA', () => {
-  const markup = renderToStaticMarkup(<AboutPageHero {...aboutPageHeroMock} />)
+  const markup = renderToStaticMarkup(
+    withIntl(<AboutPageHero {...aboutPageHeroMock} />)
+  )
 
   assert.match(markup, /Hey,\s*I(?:&apos;|&#x27;|')m Fede/)
   assert.match(markup, /Embarking on a journey of growth and education/)
@@ -24,7 +27,7 @@ test('renders heading, body, meta row, secondary body, and CTA', () => {
 
 test('falls back to contact email when resume URL is not provided', () => {
   const markup = renderToStaticMarkup(
-    <AboutPageHero {...aboutPageHeroMock} resumeUrl={undefined} />
+    withIntl(<AboutPageHero {...aboutPageHeroMock} resumeUrl={undefined} />)
   )
 
   assert.match(markup, /mailto:hello@joey\.co/)
@@ -36,7 +39,7 @@ test('uses environment contact email fallback when provided', () => {
   process.env.NEXT_PUBLIC_CONTACT_EMAIL = 'team@example.com'
 
   const markup = renderToStaticMarkup(
-    <AboutPageHero {...aboutPageHeroMock} resumeUrl={undefined} />
+    withIntl(<AboutPageHero {...aboutPageHeroMock} resumeUrl={undefined} />)
   )
 
   assert.match(markup, /mailto:team@example\.com/)
@@ -51,7 +54,7 @@ test('uses environment contact email fallback when provided', () => {
 
 test('hides CTA when showCta is false', () => {
   const markup = renderToStaticMarkup(
-    <AboutPageHero {...aboutPageHeroMock} showCta={false} />
+    withIntl(<AboutPageHero {...aboutPageHeroMock} showCta={false} />)
   )
 
   assert.ok(!markup.includes('mailto:'))

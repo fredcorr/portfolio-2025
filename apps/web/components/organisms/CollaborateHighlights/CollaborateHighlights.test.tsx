@@ -2,13 +2,14 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { withIntl } from '@/test-utils/with-intl'
 
 import CollaborateHighlights from './CollaborateHighlights'
 import { collaborateHighlightsMock } from '@/mocks/organisms/collaborate-highlights'
 
 test('renders heading and highlight items', () => {
   const markup = renderToStaticMarkup(
-    <CollaborateHighlights {...collaborateHighlightsMock} />
+    withIntl(<CollaborateHighlights {...collaborateHighlightsMock} />)
   )
 
   assert.match(markup, /Why Collaborate/)
@@ -20,7 +21,9 @@ test('renders heading and highlight items', () => {
 
 test('renders empty state when no highlights provided', () => {
   const markup = renderToStaticMarkup(
-    <CollaborateHighlights {...collaborateHighlightsMock} highlights={[]} />
+    withIntl(
+      <CollaborateHighlights {...collaborateHighlightsMock} highlights={[]} />
+    )
   )
 
   assert.match(markup, /Highlights will appear here once they are published/)
