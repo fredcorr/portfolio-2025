@@ -69,17 +69,17 @@ npm run dev:web      # Web app only
 npm run dev:studio   # Studio only
 ```
 
-**Switching the dataset.** The Studio serves both at once — pick `Develop` or
-`Production` from the workspace dropdown in the navbar, no restart needed. The
-web app reads one dataset at a time, set by `SANITY_DATASET` in
-`apps/web/.env.local`. To point it at prod for a single run without editing the
-file:
+**Switching the dataset.** Both apps read one dataset at a time and default to
+`develop`. The web app reads `SANITY_DATASET` from `apps/web/.env.local`; the
+Studio reads `SANITY_STUDIO_DATASET` from `apps/studio/.env`. To point either
+at prod for a single run without editing the file:
 
 ```bash
 SANITY_DATASET=prod npm run dev:web
+SANITY_STUDIO_DATASET=prod npm run dev:studio
 ```
 
-That works because `SANITY_DATASET` is declared on the `dev` task in
+That works because both variables are declared on the `dev` task in
 `turbo.json`. Turbo runs in strict env mode, so an undeclared variable is
 stripped before the task sees it — if you add another variable you want to
 override inline, declare it there too.
@@ -232,20 +232,23 @@ differs.
 | | `develop` | `prod` |
 | --- | --- | --- |
 | Purpose | Working dataset — drafts, experiments, schema changes | Content behind the live site |
-| Web (`SANITY_DATASET`) | Local dev, Vercel Preview + Development | Vercel Production |
-| Studio | `/develop` workspace | `/prod` workspace |
+| Web (`SANITY_DATASET`) | Local dev, `dev.fred-corr.com` (`develop` branch), Vercel Preview + Development | Vercel Production |
+| Studio (`SANITY_STUDIO_DATASET`) | Local dev, `dev.studio.fred-corr.com` (`develop` branch) | `studio.fred-corr.com` (Production) |
 | Sanity CLI | Default target | Requires an explicit `--dataset prod` |
 | Safe to break? | Yes | No — export a backup first |
 
 **Where dataset names live.** Exactly one place: the `SanityDataset` enum in
-`shared/types/base.ts`. `apps/studio/sanity.config.ts` builds one workspace per
-value, and `apps/web/sanity/client.ts` validates `SANITY_DATASET` against it.
+`shared/types/base.ts`. `apps/studio/sanity.cli.ts` validates
+`SANITY_STUDIO_DATASET` against it (the CLI config runs at build time, so an
+unknown name fails `sanity build`), and `apps/web/sanity/client.ts` validates
+`SANITY_DATASET` against it.
 
-**Studio workspaces.** `sanity.config.ts` exports an array of two workspaces
-rather than a single config, so one deployed Studio serves both datasets and
-you switch between them with the workspace dropdown in the navbar — no
-restart, no env change. URLs are namespaced accordingly
-(`/develop/structure`, `/prod/structure`); `/` redirects to `develop`.
+**One dataset per deployment.** The Studio exports a single workspace whose
+dataset comes from `SANITY_STUDIO_DATASET` at build time, so a deployment can
+only ever edit the dataset it was built for — there is no workspace dropdown.
+An unset variable means `develop`, so prod is reachable only where
+`SANITY_STUDIO_DATASET=prod` is set on purpose (Vercel Production).
+Translations (`i18n`) are currently enabled for `develop` only.
 
 **Sanity Functions.** `sanity.blueprint.ts` deploys project-wide, not
 per-dataset. The `syndicate-devto` filter is therefore scoped with
@@ -257,10 +260,9 @@ guard.
 
 1. Create it: `npx sanity datasets create <name>`
 2. Add a value to `SanityDataset` in `shared/types/base.ts`
-3. Add a workspace to `apps/studio/sanity.config.ts`
-
-That's it — the Studio dropdown picks it up automatically, and the web app
-accepts it as a valid `SANITY_DATASET`.
+3. Add its entry to `WORKSPACES` in `apps/studio/sanity.config.ts`
+4. Set `SANITY_DATASET` / `SANITY_STUDIO_DATASET` to it on the deployments
+   that should serve it
 
 ## Migrating between datasets
 
@@ -289,10 +291,11 @@ Run every step against `develop` first, verify, then repeat against `prod`.
 3. **Migrate develop's content** if the change is not backwards compatible
    (renamed or removed fields) — see _Content migrations_ below.
 4. **Back up prod:** `npx sanity datasets export prod ./backup-<date>.tar.gz`
-5. **Deploy the Studio:** `npm run build:studio && npx sanity deploy`
-   (from `apps/studio`). One deploy covers both workspaces.
-6. **Deploy the schema manifest to prod:**
-   `npx sanity schemas deploy --workspace prod --dataset prod`
+5. **Deploy the Studio:** merging to `develop` deploys
+   `dev.studio.fred-corr.com`, merging to `main` deploys `studio.fred-corr.com`.
+   Each build serves only its own dataset.
+6. **Deploy the schema manifest to prod** (from `apps/studio`):
+   `SANITY_STUDIO_DATASET=prod npx sanity schemas deploy --dataset prod`
 7. **Run the same content migration against prod** (dry run first).
 8. **Deploy the web app** with `SANITY_DATASET=prod`.
 9. **Deploy functions** if `sanity.blueprint.ts` changed:
@@ -427,6 +430,18 @@ is what separates the environments — scope it per Vercel environment:**
 | `SANITY_DATASET` | `prod` | `develop` |
 | `SITE_URL` | `https://your-domain.com` | preview URL |
 | `ALLOW_CRAWLERS` | `true` | `false` |
+| `SANITY_STUDIO_URL` | `https://studio.fred-corr.com` | `https://dev.studio.fred-corr.com` |
+
+**For the Studio project, `SANITY_STUDIO_DATASET` does the same job:**
+
+| Variable | Production | Preview (`develop` branch) |
+| --- | --- | --- |
+| `SANITY_STUDIO_DATASET` | `prod` | `develop` (or unset) |
+| `SANITY_STUDIO_PREVIEW_URL` | — | `https://dev.fred-corr.com` |
+| `SANITY_STUDIO_PREVIEW_URL_PROD` | `https://www.fred-corr.com` | — |
+
+Each Studio origin, and each site origin that runs visual editing, must also
+be a CORS origin on the project (see _CORS_ above).
 
 Applied to all environments:
 
@@ -445,12 +460,9 @@ SANITY_STUDIO_PREVIEW_URL=https://preview.your-domain.com
 SANITY_STUDIO_PREVIEW_URL_PROD=https://your-domain.com
 ```
 
-The Studio no longer needs `SANITY_STUDIO_DATASET` at build time — datasets are
-declared per workspace in `sanity.config.ts`. It is still read by the Sanity
-CLI as the default target for commands like `dataset export`.
-
-**Important**: `SANITY_DATASET` is listed in `turbo.json` → `web#build.env`, so
-changing it produces a different task hash. A dataset switch can never serve a
+**Important**: `SANITY_DATASET` is listed in `turbo.json` → `web#build.env`, and
+`SANITY_STUDIO_DATASET` in `studio#build.env`, so changing either produces a
+different task hash. A dataset switch can never serve a
 stale cached build.
 
 ### Deploying to Other Providers
