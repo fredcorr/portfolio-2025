@@ -42,3 +42,38 @@ test('hides count when item is not projects', () => {
 
   assert.doesNotMatch(markup, />12</)
 })
+
+test('shows the count on the projects index whatever its label', () => {
+  // The Italian page is "Progetti" at it/progetti: the badge follows the page,
+  // not the word "projects".
+  const markup = renderToStaticMarkup(
+    withIntl(
+      <NavItem
+        {...navItemMock}
+        item={{
+          ...navItemMock.item,
+          title: 'Progetti',
+          slug: { _type: 'slug', current: 'it/progetti' },
+        }}
+        currentPath="/it/progetti"
+      />
+    )
+  )
+
+  assert.match(markup, /Progetti/)
+  assert.match(markup, />8</)
+  assert.match(markup, /aria-label="Progetti \(8\)"/)
+})
+
+test('a "Projects" label alone does not earn the count', () => {
+  const markup = renderToStaticMarkup(
+    withIntl(
+      <NavItem
+        {...navItemMock}
+        item={{ ...navItemMock.item, isProjectsIndex: false }}
+      />
+    )
+  )
+
+  assert.doesNotMatch(markup, />8</)
+})

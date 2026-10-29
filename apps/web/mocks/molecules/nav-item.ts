@@ -7,6 +7,7 @@ export const navItemMock: NavItemProps = {
     _id: 'projects-page',
     title: 'Projects',
     showInNavigation: true,
+    isProjectsIndex: true,
     _type: PageTypeName.ProjectPage,
     slug: {
       _type: 'slug',

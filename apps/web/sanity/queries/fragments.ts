@@ -1,4 +1,5 @@
 import groq from 'groq'
+import { ComponentTypeName, PageTypeName } from '@portfolio/types/base'
 
 export const PUBLISHED_FILTER = '!(_id in path("drafts.**"))'
 
@@ -9,6 +10,14 @@ export const PUBLISHED_FILTER = '!(_id in path("drafts.**"))'
  * the missing-means-English default — lives in one place.
  */
 export const LANGUAGE_FILTER = 'coalesce(language, "en") == $locale'
+
+/**
+ * Matches the projects index page: the generic page that hosts the
+ * `workIndex` component. Its slug is localised (`projects`, `it/progetti`), so
+ * the page is found by what it contains, never by its path or title — and a
+ * translation inherits the component, so every locale's version matches.
+ */
+export const PROJECTS_INDEX_FILTER = `_type == "${PageTypeName.Page}" && count(pageComponents[_type == "${ComponentTypeName.WorkIndex}"]) > 0`
 
 export const imageFields = groq`
   alt,

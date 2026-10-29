@@ -23,4 +23,6 @@ export interface ProjectListingComponent extends SanityComponentBase<ComponentTy
   projects?: ProjectListingProject[];
   addStaggerAnimation?: boolean;
   showCtaToProjects?: boolean;
+  /** Slug of the projects index page in this locale; null when there is none. */
+  projectsIndexSlug?: string | null;
 }

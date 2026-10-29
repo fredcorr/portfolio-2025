@@ -152,7 +152,11 @@ test('declares the project set for both listing components', () => {
     )
 
   assert.deepEqual(forComponent('workIndex'), ['sanity:type:project:en'])
-  assert.deepEqual(forComponent('projectListing'), ['sanity:type:project:en'])
+  // projectListing also looks up the projects index page for its CTA.
+  assert.deepEqual(forComponent('projectListing'), [
+    'sanity:type:project:en',
+    'sanity:type:page:en',
+  ])
 })
 
 test('does not declare a set for a curated reference list', () => {

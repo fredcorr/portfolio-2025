@@ -1,5 +1,4 @@
-import { useLocale, useTranslations } from 'next-intl'
-import { toCmsSlug } from '@portfolio/utils/locale'
+import { useTranslations } from 'next-intl'
 import getPagePath from '@/utils/get-page-path'
 import RichText, { RichTextSize } from '@/components/atoms/RichText/RichText'
 import type { ProjectListingComponent } from '@portfolio/types/components'
@@ -22,14 +21,17 @@ const ProjectListing = ({
   subtitle,
   projects,
   showCtaToProjects = false,
+  projectsIndexSlug,
   addStaggerAnimation = false,
   sectionId,
   componentIndex,
 }: ProjectListingComponent) => {
   const t = useTranslations()
-  const projectsHref = getPagePath({
-    slug: toCmsSlug(useLocale(), ['projects']),
-  })
+  // The index's slug is localised (`projects`, `it/progetti`), so it comes
+  // from the CMS. A locale without one yet gets no CTA rather than a 404.
+  const projectsHref = projectsIndexSlug
+    ? getPagePath({ slug: projectsIndexSlug })
+    : undefined
   const itemListSchema = buildItemListSchema(getSiteUrl(), projects ?? [])
 
   const hasSubtitle = subtitle?.length
@@ -66,7 +68,7 @@ const ProjectListing = ({
               </Heading>
             )}
 
-            {showCtaToProjects && (
+            {showCtaToProjects && projectsHref && (
               <Link
                 href={projectsHref}
                 className="inline-flex items-center gap-2 px-4 py-2 font-heading text-body-lg font-medium text-black transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black dark:text-foreground"
