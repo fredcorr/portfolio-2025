@@ -25,6 +25,15 @@ test('renders dynamic year and author in rail', () => {
   assert.match(markup, /Federico Corradi/)
 })
 
+test('renders cookie settings button in rail', () => {
+  const markup = renderToStaticMarkup(withIntl(<Footer {...footerMock} />))
+
+  assert.match(
+    markup,
+    /<button[^>]*type="button"[^>]*>Cookie settings<\/button>/
+  )
+})
+
 test('omits email CTA when email is missing', () => {
   const markup = renderToStaticMarkup(
     withIntl(<Footer {...footerMock} email={undefined} />)
@@ -75,4 +84,5 @@ test('renders its chrome in Italian on Italian pages', () => {
   assert.match(markup, /Mappa del sito/)
   assert.match(markup, /© 2026 · Federico Corradi · Milano, IT/)
   assert.match(markup, /Torna su/)
+  assert.match(markup, /Impostazioni cookie/)
 })

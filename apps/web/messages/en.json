@@ -38,7 +38,8 @@
     "sitemap": "Sitemap",
     "elsewhere": "Elsewhere",
     "rail": "© {year} · Federico Corradi · Milan, IT",
-    "backToTop": "Back to top ↑"
+    "backToTop": "Back to top ↑",
+    "cookieSettings": "Cookie settings"
   },
   "cookies": {
     "title": "We use cookies",
@@ -52,7 +53,7 @@
     "essentialTitle": "Essential cookies",
     "essentialDescription": "Required for the site to function. These cannot be disabled.",
     "analyticsTitle": "Analytics cookies",
-    "analyticsDescription": "Help us understand how visitors interact with the site so we can improve it. No personal data is collected."
+    "analyticsDescription": "Google Analytics measures how visitors use the site so I can improve it. It uses a pseudonymous identifier and is never used for advertising."
   },
   "error": {
     "title": "Something went wrong!",
