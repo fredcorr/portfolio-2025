@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useTranslations } from 'next-intl'
+import * as CookieConsent from 'vanilla-cookieconsent'
 import type { FooterProps } from '@portfolio/types/components'
 import Icon from '@/components/atoms/Icon/Icon'
 import { cn } from '@/utils/cn'
@@ -146,7 +147,16 @@ const Footer: React.FC<FooterProps> = ({
             'md:grid-cols-[1fr_auto] md:gap-6'
           )}
         >
-          <span>{t('rail', { year: String(year) })}</span>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <span>{t('rail', { year: String(year) })}</span>
+            <button
+              type="button"
+              onClick={() => CookieConsent.showPreferences()}
+              className="text-[#f5f5f5] transition hover:opacity-55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
+            >
+              {t('cookieSettings')}
+            </button>
+          </div>
           <a
             href="#main-content"
             className="text-[#f5f5f5] transition hover:opacity-55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5] md:justify-self-end"

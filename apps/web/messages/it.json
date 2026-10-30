@@ -38,7 +38,8 @@
     "sitemap": "Mappa del sito",
     "elsewhere": "Altrove",
     "rail": "© {year} · Federico Corradi · Milano, IT",
-    "backToTop": "Torna su ↑"
+    "backToTop": "Torna su ↑",
+    "cookieSettings": "Impostazioni cookie"
   },
   "cookies": {
     "title": "Usiamo i cookie",
@@ -52,7 +53,7 @@
     "essentialTitle": "Cookie essenziali",
     "essentialDescription": "Necessari al funzionamento del sito. Non possono essere disattivati.",
     "analyticsTitle": "Cookie analitici",
-    "analyticsDescription": "Ci aiutano a capire come i visitatori usano il sito, così da migliorarlo. Non raccogliamo dati personali."
+    "analyticsDescription": "Google Analytics misura come i visitatori usano il sito, così da migliorarlo. Usa un identificativo pseudonimo e non è mai usato per la pubblicità."
   },
   "error": {
     "title": "Qualcosa è andato storto!",
