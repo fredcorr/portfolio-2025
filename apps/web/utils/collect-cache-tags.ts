@@ -220,8 +220,13 @@ const COMPONENT_SET_DEPENDENCIES: Readonly<
   // `projectListing` falls back to a query over all projects when its curated
   // `projects[]` is empty. Which branch ran is not visible in the result, so
   // the dependency is declared for both — over-invalidating a hand-picked list
-  // is the safe direction.
-  [ComponentTypeName.ProjectListing]: [PageTypeName.ProjectPage],
+  // is the safe direction. It also looks up its CTA's target — the locale's
+  // projects index page — which may not exist yet, so publishing that page
+  // must reach listings already cached without it.
+  [ComponentTypeName.ProjectListing]: [
+    PageTypeName.ProjectPage,
+    PageTypeName.Page,
+  ],
   [ComponentTypeName.WorkIndex]: [PageTypeName.ProjectPage],
 }
 

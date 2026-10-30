@@ -7,6 +7,8 @@ export interface NavigationItem {
   title: string;
   _id: string;
   _type?: PageTypeName;
+  /** True for the page hosting the project index, whatever its title or slug. */
+  isProjectsIndex?: boolean;
 }
 
 export interface NavigationData {

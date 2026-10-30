@@ -30,6 +30,7 @@ const createProjectListing = (
 ): ProjectListingComponent => ({
   _type: ComponentTypeName.ProjectListing,
   _key: 'project-listing',
+  projectsIndexSlug: 'projects',
   title: { heading: 'Featured work', headingLevel: 2 },
   subtitle: block('High-performing product design with brand craft.'),
   projects: [
@@ -146,14 +147,36 @@ test('cards use square image, shadow, and above-image badge classes', () => {
   )
 })
 
-test('More links to the projects page of the page language', () => {
+test('More links to the projects index slug for the page language', () => {
   const markup = renderToStaticMarkup(
     withIntl(
-      <ProjectListing {...createProjectListing({ showCtaToProjects: true })} />,
+      <ProjectListing
+        {...createProjectListing({
+          showCtaToProjects: true,
+          projectsIndexSlug: 'it/progetti',
+        })}
+      />,
       Locale.Italian
     )
   )
 
-  assert.match(markup, /href="\/it\/projects"/)
+  assert.match(markup, /href="\/it\/progetti"/)
+  assert.doesNotMatch(markup, /href="\/it\/projects"/)
   assert.match(markup, />Altro</)
+})
+
+test('hides More when the locale has no projects index yet', () => {
+  const markup = renderToStaticMarkup(
+    withIntl(
+      <ProjectListing
+        {...createProjectListing({
+          showCtaToProjects: true,
+          projectsIndexSlug: null,
+        })}
+      />,
+      Locale.Italian
+    )
+  )
+
+  assert.doesNotMatch(markup, />Altro</)
 })

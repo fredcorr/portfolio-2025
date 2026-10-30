@@ -1,6 +1,10 @@
 import groq from 'groq'
 import { GlobalItemsType, PageTypeName } from '@portfolio/types/base'
-import { LANGUAGE_FILTER, PUBLISHED_FILTER } from './fragments'
+import {
+  LANGUAGE_FILTER,
+  PROJECTS_INDEX_FILTER,
+  PUBLISHED_FILTER,
+} from './fragments'
 
 export const SETTINGS_QUERY = groq`
   {
@@ -26,7 +30,10 @@ export const SETTINGS_QUERY = groq`
       ]{
         _id,
         title,
-        slug
+        slug,
+        // Which item gets the project-count badge, decided by the page it
+        // links to rather than its label ("Projects" / "Progetti").
+        "isProjectsIndex": ${PROJECTS_INDEX_FILTER}
       },
       socialLinks[]{
         name,

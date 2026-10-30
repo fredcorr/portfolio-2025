@@ -5,6 +5,7 @@ import {
   titleFields,
   PUBLISHED_FILTER,
   LANGUAGE_FILTER,
+  PROJECTS_INDEX_FILTER,
 } from '../fragments'
 import { PageTypeName } from '@portfolio/types/base'
 
@@ -39,5 +40,10 @@ export const projectListingFields = groq`
         ${projectFields}
       }
   ),
-  "showCtaToProjects": showCtaToProjects
+  "showCtaToProjects": showCtaToProjects,
+  // Where the CTA points: this locale's projects index, whatever its slug.
+  // Null when that locale has none yet, and the CTA is hidden.
+  "projectsIndexSlug": *[
+    ${PROJECTS_INDEX_FILTER} && ${PUBLISHED_FILTER} && ${LANGUAGE_FILTER}
+  ][0].slug.current
 `

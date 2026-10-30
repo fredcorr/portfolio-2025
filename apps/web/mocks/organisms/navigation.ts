@@ -13,6 +13,7 @@ export const navigationMock: NavigationData = {
     {
       _id: 'projects-page',
       title: 'Projects',
+      isProjectsIndex: true,
       slug: {
         _type: 'slug',
         current: '/projects',

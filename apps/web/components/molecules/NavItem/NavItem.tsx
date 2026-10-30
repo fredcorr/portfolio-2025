@@ -36,8 +36,7 @@ const NavItem = ({
   const isColumn = layout === NavItemLayout.Column
   const label = item.title?.trim() ?? ''
   const href = getPagePath({ slug: item.slug.current, fallback: '/' })
-  const normalizedLabel = label.toLowerCase()
-  const isProjects = normalizedLabel === 'projects'
+  const isProjects = Boolean(item.isProjectsIndex)
   const showCount =
     isProjects &&
     typeof projectCount === 'number' &&
