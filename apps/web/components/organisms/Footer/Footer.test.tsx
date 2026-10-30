@@ -28,7 +28,10 @@ test('renders dynamic year and author in rail', () => {
 test('renders cookie settings button in rail', () => {
   const markup = renderToStaticMarkup(withIntl(<Footer {...footerMock} />))
 
-  assert.match(markup, /<button type="button"[^>]*>Cookie settings<\/button>/)
+  assert.match(
+    markup,
+    /<button[^>]*type="button"[^>]*>Cookie settings<\/button>/
+  )
 })
 
 test('omits email CTA when email is missing', () => {

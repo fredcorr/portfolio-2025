@@ -4,6 +4,7 @@ import React from 'react'
 import { useTranslations } from 'next-intl'
 import * as CookieConsent from 'vanilla-cookieconsent'
 import type { FooterProps } from '@portfolio/types/components'
+import Button from '@/components/atoms/Button/Button'
 import Icon from '@/components/atoms/Icon/Icon'
 import { cn } from '@/utils/cn'
 import getLinkHref from '@/utils/get-link-href'
@@ -149,13 +150,13 @@ const Footer: React.FC<FooterProps> = ({
         >
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             <span>{t('rail', { year: String(year) })}</span>
-            <button
+            <Button
               type="button"
               onClick={() => CookieConsent.showPreferences()}
-              className="text-[#f5f5f5] transition hover:opacity-55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
+              className="p-0 text-[12px] normal-case tracking-[0.02em] text-[#f5f5f5] transition hover:text-[#f5f5f5] hover:opacity-55 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5f5f5]"
             >
               {t('cookieSettings')}
-            </button>
+            </Button>
           </div>
           <a
             href="#main-content"
