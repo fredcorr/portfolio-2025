@@ -6,12 +6,7 @@
     },
     "sanity": {
       "url": "https://mcp.sanity.io/v1",
-      "type": "http",
-      "headers": {
-        "Authorization": "Bearer ${SANITY_API_WRITE_TOKEN}",
-        "Sanity-Project-Id": "${SANITY_PROJECT_ID}",
-        "Sanity-Dataset": "${SANITY_DATASET}"
-      }
+      "type": "http"
     }
   }
 }
